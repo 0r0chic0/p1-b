@@ -1,0 +1,2 @@
+- https://stackoverflow.com/questions/24304129/how-to-check-if-all-elements-of-java-collection-match-some-condition
+- 
