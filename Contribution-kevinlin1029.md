@@ -1,0 +1,1 @@
+- Wrote getInstance for SquareWave
