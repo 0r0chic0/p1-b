@@ -2,11 +2,19 @@ package cpen221.soundwaves;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SinusoidalWave extends ConcreteSoundWave {
     public static final double SECONDS_PER_SAMPLE = 1.0 / SAMPLES_PER_SECOND;
-    private static boolean debug = true;
+    private boolean debug = true;
+
+    private void checkRep() {
+        assert Arrays.stream(getLeftChannel()).allMatch(i -> i <= 1 && i >= -1): "leftChannel should only contain values in [-1, 1]";
+        assert Arrays.stream(getRightChannel()).allMatch(i -> i <= 1 && i >= -1): "rightChannel should only contain values in [-1, 1]";
+        assert Arrays.equals(getRightChannel(), getLeftChannel()) : "rightChannel and leftChannel should be the same reference";
+        assert getRightChannel().length == getLeftChannel().length: "rightChannel and leftChannel should have equal samples";
+    }
 
     // The abstraction function is
     //      AF(r) = sinusoidal sound wave w such that
@@ -19,6 +27,7 @@ public class SinusoidalWave extends ConcreteSoundWave {
      */
     private SinusoidalWave(double[] channel) {
         super(channel, channel);
+        checkRep();
     }
 
     /**
