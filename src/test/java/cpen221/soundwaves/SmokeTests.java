@@ -56,6 +56,41 @@ public class SmokeTests {
     }
 
     /**
+     * Test for SquareWave: assumes that the value at jump time is +amplitude
+     * Example: wave at time 0 with no phase change and amplitude 1 is 1
+     */
+    @Test
+    public void testCreateSquareWave() {
+        double freq = 6000;
+        double phase = 0.0;
+        double amplitude = 1.0;
+        double duration = 5.0 / 44100.0;
+        SoundWave sw1 = SquareWave.getInstance(freq, phase, amplitude, duration);
+        double[] left = {1, 1, 1, 1, -1};
+        double[] right = {1, 1, 1, 1, -1};
+
+        assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
+        assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
+    }
+
+    /**
+     * Test for triangle wave
+     */
+    @Test
+    public void testCreateTriangleWave() {
+        double freq = 1;
+        double phase = 0.0;
+        double amplitude = 1.0;
+        double duration = 5.0 / 44100.0;
+        SoundWave sw1 = TriangleWave.getInstance(freq, phase, amplitude, duration);
+        double[] left = {0, 0.0000907, 0.0001814, 0.0002721, 0.0003628};
+        double[] right = {0, 0.0000907, 0.0001814, 0.0002721, 0.0003628};
+
+        assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
+        assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
+    }
+
+    /**
      * append(double[] leftChannel, double[] rightChannel)
      * Test when both leftChannel and rightChannel are not empty. The wave is not empty too.
      * Left and right channels have different values to test more values.

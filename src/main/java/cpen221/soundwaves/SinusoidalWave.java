@@ -6,6 +6,11 @@ import java.util.List;
 
 public class SinusoidalWave extends ConcreteSoundWave {
     public static final double SECONDS_PER_SAMPLE = 1.0 / SAMPLES_PER_SECOND;
+    private static boolean debug = true;
+
+    // The abstraction function is
+    //      AF(r) = sinusoidal sound wave w such that
+    //
 
     /**
      * A private constructor
