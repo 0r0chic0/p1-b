@@ -1,10 +1,10 @@
 package cpen221.soundwaves;
 
+import ca.ubc.ece.cpen221.mp1.utils.MP3Player;
 import cpen221.soundwaves.soundutils.Audio;
 import cpen221.soundwaves.soundutils.AudioFile;
 import cpen221.soundwaves.soundutils.SoundWaveChart;
 import java.util.Arrays;
-import ca.ubc.ece.cpen221.mp1.utils.MP3Player;
 /**
  * <p>Simple <code>Main</code> class to demonstrate how
  * to play and visualize sound waves.</p>
