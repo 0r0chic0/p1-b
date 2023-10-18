@@ -10,13 +10,12 @@ public class SinusoidalWave extends ConcreteSoundWave {
     private boolean debug = true;
 
     private void checkRep() {
+        assert Arrays.equals(getRightChannel(), getLeftChannel()) : "rightChannel and leftChannel should be the same reference";
         assert Arrays.stream(getLeftChannel()).allMatch(i -> i <= 1 && i >= -1): "leftChannel should only contain values in [-1, 1]";
         assert Arrays.stream(getRightChannel()).allMatch(i -> i <= 1 && i >= -1): "rightChannel should only contain values in [-1, 1]";
-        assert Arrays.equals(getRightChannel(), getLeftChannel()) : "rightChannel and leftChannel should be the same reference";
-        assert getRightChannel().length == getLeftChannel().length: "rightChannel and leftChannel should have equal samples";
     }
 
-    // The abstraction function is
+    // The abstraction function is (finish this)
     //      AF(r) = sinusoidal sound wave w such that
     //
 
@@ -27,7 +26,9 @@ public class SinusoidalWave extends ConcreteSoundWave {
      */
     private SinusoidalWave(double[] channel) {
         super(channel, channel);
-        checkRep();
+        if (debug) {
+            checkRep();
+        }
     }
 
     /**

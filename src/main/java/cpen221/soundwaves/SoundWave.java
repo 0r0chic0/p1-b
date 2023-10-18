@@ -2,6 +2,8 @@ package cpen221.soundwaves;
 
 import cpen221.soundwaves.soundutils.FilterType;
 
+import java.util.List;
+
 public interface SoundWave {
 
     public static final int SAMPLES_PER_SECOND = 44100;
@@ -116,4 +118,15 @@ public interface SoundWave {
      * @return the filtered {@code SoundWave}
      */
     public SoundWave filter(FilterType type, Double... frequencies);
+
+    /**
+     * Gets number of samples in a SoundWave.
+     *
+     * @return the length of right and left channel of SoundWAve
+     */
+    public int getChannelSize();
+
+    public List<Double> getRightChannelList();
+
+    public List<Double> getLeftChannelList();
 }

@@ -2,8 +2,10 @@ package cpen221.soundwaves;
 
 import cpen221.soundwaves.soundutils.FilterType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class ConcreteSoundWave implements SoundWave {
     private double[] leftChannel;
@@ -59,7 +61,7 @@ public class ConcreteSoundWave implements SoundWave {
 
     /**
      * Gets duration of sound wave
-     * @return duration of sound wave assuming sampling rate is 44,100 samples per second
+     * @return duration of sound wave in seconds assuming sampling rate is 44,100 samples per second
      */
     @Override
     public double duration() {
@@ -79,10 +81,107 @@ public class ConcreteSoundWave implements SoundWave {
         // TODO: Implement this method.
     }
 
+    /**
+     * Superimposes a wave to SoundWave.
+     * @param other: wave to superimpose to SoundWave
+     * @return the superimposed wave with elements in [-1,1]
+     */
     @Override
     public SoundWave add(SoundWave other) {
-        // TODO: Implement this method
-        return null; // change this
+        if (debug) {
+            checkRep();
+        }
+
+        List<Double> wave3R = new ArrayList<>();
+        List<Double> wave3L = new ArrayList<>();
+        List<Double> wave1L = getLeftChannelList();
+        List<Double> wave1R = getRightChannelList();
+        List<Double> wave2L = other.getRightChannelList();
+        List<Double> wave2R = other.getLeftChannelList();
+
+        for (int i = 0; i < getChannelSize() || i < other.getChannelSize(); i++) {
+            if (i >= getChannelSize()) {
+                wave1L.add(0.0);
+                wave1R.add(0.0);
+            }
+            if (i >= other.getChannelSize()) {
+                wave2L.add(0.0);
+                wave2R.add(0.0);
+            }
+            double addedSample = wave1L.get(i) + wave2L.get(i);
+            addedSample = capAmplitude(addedSample);
+            wave3L.add(i, addedSample);
+            addedSample = wave1R.get(i) + wave2R.get(i);
+            addedSample = capAmplitude(addedSample);
+            wave3R.add(i, addedSample);
+        }
+
+        double[] addedL = new double[wave3L.size()];
+        double[] addedR = new double[wave3R.size()];
+
+        for (int i = 0; i < wave3R.size(); i++) {
+            addedL[i] = wave3L.get(i);
+            addedR[i] = wave3R.get(i);
+        }
+
+        return new ConcreteSoundWave(addedL, addedR);
+    }
+
+    @Override
+    public List<Double> getRightChannelList() {
+        if (debug) {
+            checkRep();
+        }
+        List<Double> rightChannelList = new ArrayList<>();
+        for (int i = 0; i < getChannelSize(); i++) {
+            rightChannelList.add(getRightChannel()[i]);
+        }
+        if (debug) {
+            checkRep();
+        }
+        return rightChannelList;
+    }
+
+    @Override
+    public List<Double> getLeftChannelList() {
+        if (debug) {
+            checkRep();
+        }
+        List<Double> leftChannelList = new ArrayList<>();
+        for (int i = 0; i < getChannelSize(); i++) {
+            leftChannelList.add(getLeftChannel()[i]);
+        }
+        if (debug) {
+            checkRep();
+        }
+        return leftChannelList;
+    }
+
+
+    /**
+     * Checks if a sample it is too high or low in amplitude and caps it to the boundary
+     *
+     * @param sample: sample to check
+     * @return capped sample if out of boundaries, otherwise the same sample
+     * @author dzhen2023
+     */
+    private static double capAmplitude(double sample) {
+        if (sample > 1.0) {
+            sample = 1.0;
+        } else if (sample < -1.0) {
+            sample = -1.0;
+        }
+        return sample;
+    }
+
+    /**
+     * Gets size of channels in SoundWave.
+     * @return length of right and left channels of SoundWave
+     * @author dzhen2023
+     */
+    @Override
+    public int getChannelSize() {
+        return getRightChannel().length;
     }
 
     @Override
