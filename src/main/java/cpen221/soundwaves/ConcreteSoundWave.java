@@ -92,41 +92,51 @@ public class ConcreteSoundWave implements SoundWave {
             checkRep();
         }
 
-        List<Double> wave3R = new ArrayList<>();
-        List<Double> wave3L = new ArrayList<>();
-        List<Double> wave1L = getLeftChannelList();
-        List<Double> wave1R = getRightChannelList();
-        List<Double> wave2L = other.getRightChannelList();
-        List<Double> wave2R = other.getLeftChannelList();
+        List<Double> newR = new ArrayList<>();
+        List<Double> newL = new ArrayList<>();
+        List<Double> waveL = getLeftChannelList();
+        List<Double> waveR = getRightChannelList();
+        List<Double> otherL = other.getRightChannelList();
+        List<Double> otherR = other.getLeftChannelList();
 
         for (int i = 0; i < getChannelSize() || i < other.getChannelSize(); i++) {
             if (i >= getChannelSize()) {
-                wave1L.add(0.0);
-                wave1R.add(0.0);
+                waveL.add(0.0);
+                waveR.add(0.0);
             }
             if (i >= other.getChannelSize()) {
-                wave2L.add(0.0);
-                wave2R.add(0.0);
+                otherL.add(0.0);
+                otherR.add(0.0);
             }
-            double addedSample = wave1L.get(i) + wave2L.get(i);
-            addedSample = capAmplitude(addedSample);
-            wave3L.add(i, addedSample);
-            addedSample = wave1R.get(i) + wave2R.get(i);
-            addedSample = capAmplitude(addedSample);
-            wave3R.add(i, addedSample);
+            double addedSample = waveL.get(i) + otherL.get(i);
+            newL.add(i, addedSample);
+            addedSample = waveR.get(i) + otherR.get(i);
+            newR.add(i, addedSample);
         }
 
-        double[] addedL = new double[wave3L.size()];
-        double[] addedR = new double[wave3R.size()];
+        double[] addedL = new double[newL.size()];
+        double[] addedR = new double[newR.size()];
 
-        for (int i = 0; i < wave3R.size(); i++) {
-            addedL[i] = wave3L.get(i);
-            addedR[i] = wave3R.get(i);
+        for (int i = 0; i < newR.size(); i++) {
+            addedL[i] = newL.get(i);
+            addedR[i] = newR.get(i);
+        }
+
+        normalizeWave(addedL);
+        normalizeWave(addedR);
+
+        if (debug) {
+            checkRep();
         }
 
         return new ConcreteSoundWave(addedL, addedR);
     }
 
+    /**
+     * Gets right channel of ConcreteSoundWave as a list.
+     *
+     * @return right channel as list
+     */
     @Override
     public List<Double> getRightChannelList() {
         if (debug) {
@@ -142,6 +152,11 @@ public class ConcreteSoundWave implements SoundWave {
         return rightChannelList;
     }
 
+    /**
+     * Gets left channel of ConcreteSoundWave as a list.
+     *
+     * @return left channel as list
+     */
     @Override
     public List<Double> getLeftChannelList() {
         if (debug) {
@@ -159,19 +174,23 @@ public class ConcreteSoundWave implements SoundWave {
 
 
     /**
-     * Checks if a sample it is too high or low in amplitude and caps it to the boundary
+     * Checks if a sample it is too high or low in amplitude and then normalizes it
      *
-     * @param sample: sample to check
-     * @return capped sample if out of boundaries, otherwise the same sample
+     * @param channel: wave channel to normalize
      * @author dzhen2023
      */
-    private static double capAmplitude(double sample) {
-        if (sample > 1.0) {
-            sample = 1.0;
-        } else if (sample < -1.0) {
-            sample = -1.0;
+    private static void normalizeWave(double[] channel) {
+        double loudest = 1.0;
+        for (double sample: channel) {
+            if (Math.abs(sample) > loudest) {
+                loudest = Math.abs(sample);
+            }
         }
-        return sample;
+        if (loudest > 1.0) {
+            for (int i = 0; i < channel.length; i++) {
+                channel[i] = channel[i] / loudest;
+            }
+        }
     }
 
     /**

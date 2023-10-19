@@ -1,2 +1,4 @@
 - Wrote rep invariant and abstraction function for ConcreteSoundWave and implemented the constructor and getChannel methods as well as duration
 - Wrote getInstance for SinusoidalWave
+- Wrote tests for TriangleWave and SquareWave
+- 

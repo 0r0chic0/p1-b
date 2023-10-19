@@ -4,7 +4,9 @@ import ca.ubc.ece.cpen221.mp1.utils.MP3Player;
 import cpen221.soundwaves.soundutils.Audio;
 import cpen221.soundwaves.soundutils.AudioFile;
 import cpen221.soundwaves.soundutils.SoundWaveChart;
+
 import java.util.Arrays;
+
 /**
  * <p>Simple <code>Main</code> class to demonstrate how
  * to play and visualize sound waves.</p>
@@ -68,6 +70,12 @@ public class Main {
         for (int t = 0; t < duration; t++) {
             double[] samples = Arrays.copyOfRange(allSamples, t * SoundWave.SAMPLES_PER_SECOND, (t + 1) * SoundWave.SAMPLES_PER_SECOND);
             chart.updateDrawing(samples);
+
+            try {
+                Thread.sleep(1000); // Can increase if getting Index 0 out of bounds for length 0 exception
+            } catch (InterruptedException e) {
+                System.err.println("Delay was interrupted...");
+            }
 //            Audio.play(samples);
         }
     }
