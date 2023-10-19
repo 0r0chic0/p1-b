@@ -7,6 +7,8 @@ import cpen221.soundwaves.soundutils.SoundWaveChart;
 
 import java.util.Arrays;
 
+import static cpen221.soundwaves.soundutils.FilterType.HIGHPASS;
+
 /**
  * <p>Simple <code>Main</code> class to demonstrate how
  * to play and visualize sound waves.</p>
@@ -24,8 +26,11 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-        SoundWave wave1 = SinusoidalWave.getInstance(400.0,0,1.0,10.0 / SoundWave.SAMPLES_PER_SECOND);
-        wave1.highestAmplitudeFrequencyComponent();
+        SoundWave wave1 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave2 = SinusoidalWave.getInstance(2205.0, 0, 0.7, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave3 = wave1.add(wave2);
+        wave3.filter(HIGHPASS, 2000.0);
+        wave3.highestAmplitudeFrequencyComponent();
 //        examplePlayMP3file();
 //        examplePlayWAVfile();
         exampleSineWaveWithChart();

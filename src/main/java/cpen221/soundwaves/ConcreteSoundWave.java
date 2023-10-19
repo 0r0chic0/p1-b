@@ -419,15 +419,19 @@ public class ConcreteSoundWave implements SoundWave {
             for (int k = 0; k < N; k++) {
                 sumTerm.add(seqDFT[k] * Math.cos(2 * Math.PI * k * t / N), Math.sin(2 * Math.PI * k * t / N));
             }
-            inverseDFT[t] = ComplexNumber.mod(sumTerm);
+            inverseDFT[t] = ComplexNumber.mod(sumTerm) / N;
         }
 
-        return  inverseDFT;
+        return inverseDFT;
     }
 
     /**
+     * Filters the left and right channels of the ConcreteSoundWave, by type:
+     * HIGHPASS: filters all frequencies < the maximum frequency provided
+     * BANDPASS: filters all frequencies not in between the two specifies frequencies
+     * LOWPASS: filters all frequencies > minimum provided frequency
      *
-     * @param type the type of filter to apply
+     * @param type the type of filter to apply (HIGHPASS, BANDPASS, LOWPASS)
      * @param frequencies the frequencies to use for filtering
      * @return the filtered ConcreteSoundWave
      */
