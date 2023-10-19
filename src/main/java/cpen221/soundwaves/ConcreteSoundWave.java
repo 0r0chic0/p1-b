@@ -1,6 +1,7 @@
 package cpen221.soundwaves;
 
 import cpen221.soundwaves.soundutils.FilterType;
+import jdk.jfr.Frequency;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -424,26 +425,73 @@ public class ConcreteSoundWave implements SoundWave {
         return  inverseDFT;
     }
 
+    /**
+     *
+     * @param type the type of filter to apply
+     * @param frequencies the frequencies to use for filtering
+     * @return the filtered ConcreteSoundWave
+     */
     @Override
     public SoundWave filter(FilterType type, Double... frequencies) {
-        // TODO: Implement this method correctly.
         // The provided code illustrates -- rather simply -- two ideas:
         // (1) the use of varargs, and
         // (2) one use of enums.
 
         if (frequencies.length > 2) {
             System.out.println("Error");
+            return new ConcreteSoundWave(getLeftChannel(), getRightChannel());
         }
         else {
             System.out.println(frequencies[0]);
         }
 
-        switch (type) {
-            case LOWPASS: break;
-            case BANDPASS: break;
-            case HIGHPASS: break;
-            default:
+        if (debug) {
+            checkRep();
         }
-        return null;
+
+        double filterFreqMin;
+        double filterFreqMax;
+
+        if (frequencies.length == 1) {
+            filterFreqMax = frequencies[0];
+            filterFreqMin = frequencies[0];
+        } else {
+            filterFreqMax = Math.max(frequencies[0], frequencies[1]);
+            filterFreqMin = Math.min(frequencies[0], frequencies[1]);
+        }
+
+        double[] rightDFT = DFT(getRightChannel());
+        double[] leftDFT = DFT(getLeftChannel());
+        double N = rightDFT.length;
+
+        switch (type) {
+            case LOWPASS:
+                for (int t = 0; t < N; t++) {
+                    if (SAMPLES_PER_SECOND / N * t > filterFreqMin) {
+                        rightDFT[t] = 0.0;
+                        leftDFT[t] = 0.0;
+                    }
+                }
+            case BANDPASS:
+                for (int t = 0; t < N; t++) {
+                if (SAMPLES_PER_SECOND / N * t > filterFreqMax || SAMPLES_PER_SECOND / N * t < filterFreqMin) {
+                    rightDFT[t] = 0.0;
+                    leftDFT[t] = 0.0;
+                }
+            }
+            case HIGHPASS:
+                for (int t = 0; t < N; t++) {
+                if (SAMPLES_PER_SECOND / N * t < filterFreqMax) {
+                    rightDFT[t] = 0.0;
+                    leftDFT[t] = 0.0;
+                }
+            }
+            default: break;
+        }
+
+        if (debug) {
+            checkRep();
+        }
+        return new ConcreteSoundWave(inverseDFT(leftDFT), inverseDFT(rightDFT));
     }
 }
