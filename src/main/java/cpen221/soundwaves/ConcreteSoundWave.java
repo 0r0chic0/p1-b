@@ -343,7 +343,7 @@ public class ConcreteSoundWave implements SoundWave {
         for (int k = 0; k < N; k++) {
             ComplexNumber sumTerm = new ComplexNumber(0,0);
             for (int t = 0; t < N; t++) {
-                sumTerm.add(channel[t] * Math.cos(2 * Math.PI * k * t / N), -Math.sin(2 * Math.PI * k * t / N));
+                sumTerm.add(channel[t] * Math.cos(2 * Math.PI * k * t / N),channel[t] *  -Math.sin(2 * Math.PI * k * t / N));
             }
             transformedChannel[k] = ComplexNumber.mod(sumTerm);
         }
