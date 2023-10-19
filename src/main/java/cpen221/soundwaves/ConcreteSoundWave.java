@@ -403,6 +403,27 @@ public class ConcreteSoundWave implements SoundWave {
         return maxFreq;
     }
 
+    /**
+     * Computes inverse discrete Fourier transform on a transformed sequence.
+     *
+     * @param seqDFT: transformed sequence to be inversed
+     * @return the inversed DFT sequence
+     */
+    private double[] inverseDFT(double[] seqDFT) {
+        int N = seqDFT.length;
+        double[] inverseDFT = new double[N];
+
+        for (int t = 0; t < N; t++) {
+            ComplexNumber sumTerm = new ComplexNumber(0, 0);
+            for (int k = 0; k < N; k++) {
+                sumTerm.add(seqDFT[k] * Math.cos(2 * Math.PI * k * t / N), Math.sin(2 * Math.PI * k * t / N));
+            }
+            inverseDFT[t] = ComplexNumber.mod(sumTerm);
+        }
+
+        return  inverseDFT;
+    }
+
     @Override
     public SoundWave filter(FilterType type, Double... frequencies) {
         // TODO: Implement this method correctly.
