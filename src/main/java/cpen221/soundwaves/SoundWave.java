@@ -7,6 +7,7 @@ import java.util.List;
 public interface SoundWave {
 
     public static final int SAMPLES_PER_SECOND = 44100;
+    public static final double SECONDS_PER_SAMPLE = 1.0 / SAMPLES_PER_SECOND;
 
     /* ===== TASK 1 ==== */
 

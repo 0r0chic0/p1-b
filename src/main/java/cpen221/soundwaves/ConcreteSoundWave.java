@@ -4,7 +4,6 @@ import cpen221.soundwaves.soundutils.FilterType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ConcreteSoundWave implements SoundWave {
@@ -331,6 +330,28 @@ public class ConcreteSoundWave implements SoundWave {
         // t & (t >> 3) & (t >> 8) % SCALE;
         return new ConcreteSoundWave(newLChannel, newRChannel);
     }
+
+    /**
+     * Performs the discrete Fourier transform on a sequence of samples
+     *
+     * @param channel:  channel to perform DFT on
+     * @return sequence transformed by DFT
+     */
+    private static double[] DFT(double[] channel) {
+        int N = channel.length;
+        double[] transformedChannel = new double[N];
+        for (int k = 0; k < N; k++) {
+            ComplexNumber sumTerm = new ComplexNumber(0,0);
+            for (int t = 0; t < N; t++) {
+                sumTerm.add(channel[t] * Math.cos(2 * Math.PI * k * t / N), -Math.sin(2 * Math.PI * k * t / N));
+            }
+            transformedChannel[k] = ComplexNumber.mod(sumTerm);
+        }
+
+        return transformedChannel;
+    }
+
+
 
     @Override
     public double highestAmplitudeFrequencyComponent() {
