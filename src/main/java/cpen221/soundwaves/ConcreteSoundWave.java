@@ -419,9 +419,9 @@ public class ConcreteSoundWave implements SoundWave {
             for (int k = 0; k < N; k++) {
                 sumTerm.add(seqDFT[k] * Math.cos(2 * Math.PI * k * t / N), Math.sin(2 * Math.PI * k * t / N));
             }
-            inverseDFT[t] = ComplexNumber.mod(sumTerm) / N;
+            sumTerm = new ComplexNumber(sumTerm.getReal() / N, sumTerm.getImaginary() / N);
+            inverseDFT[t] = ComplexNumber.mod(sumTerm);
         }
-
         return inverseDFT;
     }
 

@@ -2,3 +2,6 @@
 - Wrote getInstance for SinusoidalWave
 - Wrote tests for TriangleWave and SquareWave
 - Wrote add method
+- Wrote DFT and inverse DFT methods
+- Wrote the filter method
+- Wrote the highestAmplitudeFrequencyComponent method

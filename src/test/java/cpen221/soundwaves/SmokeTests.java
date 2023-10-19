@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import static cpen221.soundwaves.soundutils.FilterType.HIGHPASS;
+import static cpen221.soundwaves.soundutils.FilterType.LOWPASS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SmokeTests {
@@ -201,11 +202,19 @@ public class SmokeTests {
 
     @Test
     public void testFilter() {
+        // Test high pass filter
         SoundWave wave1 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
         SoundWave wave2 = SinusoidalWave.getInstance(2205.0, 0, 0.7, 100.0 / SoundWave.SAMPLES_PER_SECOND);
         SoundWave wave3 = wave1.add(wave2);
-        wave3.filter(HIGHPASS, 2000.0);
-        assertEquals(2205.0, wave3.highestAmplitudeFrequencyComponent());
+        SoundWave wave3f = wave3.filter(HIGHPASS, 2000.0);
+        assertEquals(2205.0, wave3f.highestAmplitudeFrequencyComponent());
+
+        // Test low pass filter
+        SoundWave wave4 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave5 = SinusoidalWave.getInstance(2205.0, 0, 0.7, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave6 = wave4.add(wave5);
+        SoundWave wave6f = wave6.filter(LOWPASS, 500.0);
+        assertEquals(441.0, wave6.highestAmplitudeFrequencyComponent());
     }
 
     /**
