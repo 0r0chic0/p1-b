@@ -82,16 +82,16 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Superimposes a wave to SoundWave.
+     * Superimposes a wave other to SoundWave.
+     *
      * @param other: wave to superimpose to SoundWave
-     * @return the superimposed wave with elements in [-1,1]
+     * @return the superimposed wave with elements normalized to [-1,1]
      */
     @Override
     public SoundWave add(SoundWave other) {
         if (debug) {
             checkRep();
         }
-
         List<Double> newR = new ArrayList<>();
         List<Double> newL = new ArrayList<>();
         List<Double> waveL = getLeftChannelList();
@@ -100,14 +100,8 @@ public class ConcreteSoundWave implements SoundWave {
         List<Double> otherR = other.getLeftChannelList();
 
         for (int i = 0; i < getChannelSize() || i < other.getChannelSize(); i++) {
-            if (i >= getChannelSize()) {
-                waveL.add(0.0);
-                waveR.add(0.0);
-            }
-            if (i >= other.getChannelSize()) {
-                otherL.add(0.0);
-                otherR.add(0.0);
-            }
+            extendWaveList(i, waveL, waveR);
+            extendWaveList(i, otherL, otherR);
             double addedSample = waveL.get(i) + otherL.get(i);
             newL.add(i, addedSample);
             addedSample = waveR.get(i) + otherR.get(i);
@@ -130,6 +124,20 @@ public class ConcreteSoundWave implements SoundWave {
         }
 
         return new ConcreteSoundWave(addedL, addedR);
+    }
+
+    /**
+     * Extends wave list by adding a 0.0 element to list if index i is greater than channel size.
+     *
+     * @param i: index to check
+     * @param waveL: left channel of wave
+     * @param waveR: right channel of wave
+     */
+    public static void extendWaveList(int i, List<Double> waveL, List<Double> waveR) {
+        if (i >= waveR.size()) {
+            waveL.add(0.0);
+            waveR.add(0.0);
+        }
     }
 
     /**
@@ -220,10 +228,59 @@ public class ConcreteSoundWave implements SoundWave {
         return true; // change this
     }
 
+    /**
+     * Calculates the similarity of the ConcreteSoundWave to wave other
+     *
+     * @param other is not null.
+     * @return return the similarity of the wave and other
+     */
     @Override
     public double similarity(SoundWave other) {
-        // TODO: Implement this method
-        return -1;
+        if (debug) {
+            checkRep();
+        }
+        double beta = 0;
+        other.scale(beta);
+        List<Double> w1R = getRightChannelList();
+        List<Double> w1L = getLeftChannelList();
+        List<Double> w2R = other.getRightChannelList();
+        List<Double> w2L = other.getLeftChannelList();
+
+        double gamma1 = gamma(w1R, w1L, w2R, w2L, other);
+        double gamma2 = gamma(w2R, w2L, w1R, w1L, other);
+
+        return (gamma1 + gamma2) / 2;
+    }
+
+    private double gamma(List<Double> w1R, List<Double> w1L, List<Double> w2R, List<Double> w2L, SoundWave other) {
+        double sum1 = 0;
+        double sum2 = 0;
+        for (int i = 0; i < w1L.size() || i < w2L.size(); i++) {
+            extendWaveList(i, w1L, w1R);
+            extendWaveList(i, w2L, w1R);
+            sum1 += Math.pow(w1R.get(i) - w2R.get(i),2);
+            sum2 += Math.pow(w1L.get(i) - w2L.get(i),2);
+        }
+
+        if (isSingleChannel() && other.isSingleChannel()) {
+            return 1 / (1 + sum1);
+        }
+
+        return 1 / (1 + sum1 + sum2);
+    }
+
+    /**
+     * Checks if sound wave has the same channel in left and right
+     *
+     * @return true if left and right channels have same values
+     */
+    public boolean isSingleChannel() {
+        for (int i = 0; i < getChannelSize(); i++) {
+            if (getLeftChannel()[0] != getRightChannel()[0]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
