@@ -332,7 +332,8 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Performs the discrete Fourier transform on a sequence of samples
+     * Performs the discrete Fourier transform on a sequence of samples.
+     * Frequency resolution of terms is 44100 / N
      *
      * @param channel:  channel to perform DFT on
      * @return sequence transformed by DFT
