@@ -185,6 +185,19 @@ public class SmokeTests {
         assertTrue(firstSet.containsAll(sounds.subList(0, 3)));
     }
 
+    @Test
+    public void testHighestAmplitudeFrequencyComponent() {
+        SoundWave wave1 = SinusoidalWave.getInstance(400.0,0,0.50,100.0 / SoundWave.SAMPLES_PER_SECOND);
+        assertEquals(441, wave1.highestAmplitudeFrequencyComponent(), 1);
+        SoundWave wave2 = SinusoidalWave.getInstance(2205,0,0.30,100.0 / SoundWave.SAMPLES_PER_SECOND);
+        assertEquals(2205, wave2.highestAmplitudeFrequencyComponent(), 1);
+        SoundWave wave3 = SinusoidalWave.getInstance(980, 0, 0.40, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave4 = wave3.add(wave2);
+        assertEquals(882, wave4.highestAmplitudeFrequencyComponent(), 1);
+        SoundWave wave5 = wave4.add(wave1);
+        assertEquals(441.0, wave5.highestAmplitudeFrequencyComponent());
+    }
+
     /**
      * Generate a random signal of length 100.
      *

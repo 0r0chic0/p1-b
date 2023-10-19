@@ -8,6 +8,7 @@ public interface SoundWave {
 
     public static final int SAMPLES_PER_SECOND = 44100;
     public static final double SECONDS_PER_SAMPLE = 1.0 / SAMPLES_PER_SECOND;
+    public static final double NYQUIST_LIMIT = SAMPLES_PER_SECOND / 2.0;
 
     /* ===== TASK 1 ==== */
 

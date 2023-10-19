@@ -232,6 +232,9 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public int getChannelSize() {
+        if (debug) {
+            checkRep();
+        }
         return getRightChannel().length;
     }
 
@@ -299,10 +302,16 @@ public class ConcreteSoundWave implements SoundWave {
      * @return true if left and right channels have same values
      */
     public boolean isSingleChannel() {
+        if (debug) {
+            checkRep();
+        }
         for (int i = 0; i < getChannelSize(); i++) {
             if (getLeftChannel()[0] != getRightChannel()[0]) {
                 return false;
             }
+        }
+        if (debug) {
+            checkRep();
         }
         return true;
     }
@@ -334,6 +343,7 @@ public class ConcreteSoundWave implements SoundWave {
     /**
      * Performs the discrete Fourier transform on a sequence of samples.
      * Frequency resolution of terms is 44100 / N
+     * Any frequency above the Nyquist limit can be ignored (44100 / 2)
      *
      * @param channel:  channel to perform DFT on
      * @return sequence transformed by DFT
@@ -344,20 +354,53 @@ public class ConcreteSoundWave implements SoundWave {
         for (int k = 0; k < N; k++) {
             ComplexNumber sumTerm = new ComplexNumber(0,0);
             for (int t = 0; t < N; t++) {
-                sumTerm.add(channel[t] * Math.cos(2 * Math.PI * k * t / N),channel[t] *  -Math.sin(2 * Math.PI * k * t / N));
+                sumTerm.add(channel[t] * Math.cos(2 * Math.PI * k * t / N),channel[t] * -Math.sin(2 * Math.PI * k * t / N));
             }
             transformedChannel[k] = ComplexNumber.mod(sumTerm);
         }
-
         return transformedChannel;
     }
 
 
-
+    /**
+     * Computes the highest amplitude frequency component of both channels.
+     * Ignores any values above the Nyquist limit.
+     * The frequency components of a discrete Fourier transformed sequence will
+     * only contain frequency multiples of the frequency resolution (44,100 / N)
+     * if N is the number of elements in a sequence.
+     * So, less samples results in less frequency accuracy.
+     *
+     * @return the frequency of the highest value in the fourier transformed sequence
+     */
     @Override
     public double highestAmplitudeFrequencyComponent() {
-        // TODO: Implement this method
-        return -1; // change this
+        if (debug) {
+            checkRep();
+        }
+        double freqRes = SAMPLES_PER_SECOND / (double) getChannelSize();
+        double[] rightDFT = DFT(getRightChannel());
+        double[] leftDFT = DFT(getLeftChannel());
+        double[] combinedDFT = new double[rightDFT.length];
+
+        for (int i = 0; i < rightDFT.length; i++) {
+            combinedDFT[i] = leftDFT[i] + rightDFT[i];
+        }
+
+        double maxFreqComp = 0;
+        double maxFreq = 0;
+        for (int t = 0; t < combinedDFT.length; t++) {
+            if (t * freqRes > NYQUIST_LIMIT) {
+                break;
+            }
+            if (maxFreqComp < combinedDFT[t]) {
+                maxFreqComp = combinedDFT[t];
+                maxFreq = t * freqRes;
+            }
+        }
+        if (debug) {
+            checkRep();
+        }
+        return maxFreq;
     }
 
     @Override

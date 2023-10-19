@@ -24,6 +24,8 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
+        SoundWave wave1 = SinusoidalWave.getInstance(400.0,0,1.0,10.0 / SoundWave.SAMPLES_PER_SECOND);
+        wave1.highestAmplitudeFrequencyComponent();
 //        examplePlayMP3file();
 //        examplePlayWAVfile();
         exampleSineWaveWithChart();
