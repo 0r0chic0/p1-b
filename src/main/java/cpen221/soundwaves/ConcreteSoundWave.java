@@ -71,6 +71,14 @@ public class ConcreteSoundWave implements SoundWave {
         return (double) rightChannel.length / (double) SAMPLES_PER_SECOND;
     }
 
+    /**
+     * Appends wave samples to left and right channels of the sound wave.
+     *
+     * @param lchannel: samples to append to left channel
+     *                  requires that lchannel is equal in length to rchannel
+     * @param rchannel: samples to append to right channel
+     *                  requires that rchannel is equal in length to lchannel
+     */
     @Override
     public void append(double[] lchannel, double[] rchannel) {
         // TODO: Implement this method.
