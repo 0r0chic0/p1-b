@@ -74,11 +74,28 @@ public class ConcreteSoundWave implements SoundWave {
     @Override
     public void append(double[] lchannel, double[] rchannel) {
         // TODO: Implement this method.
+        double[] templ = new double[lchannel.length+leftChannel.length];
+        double[] tempr = new double[rchannel.length+rightChannel.length];
+        for (int i=0;i<leftChannel.length;i++) {
+            templ[i] = leftChannel[i];
+        }
+        for (int i = 0; i < lchannel.length; i++) {
+            templ[leftChannel.length+i] = lchannel[i];
+        }
+        for (int i=0;i<rightChannel.length;i++) {
+            tempr[i] = rightChannel[i];
+        }
+        for (int i = 0; i < rchannel.length; i++) {
+            tempr[rightChannel.length+i] = rchannel[i];
+        }
+        leftChannel = templ;
+        rightChannel = tempr;
     }
 
     @Override
     public void append(SoundWave other) {
         // TODO: Implement this method.
+        append(other.getLeftChannel(),other.getRightChannel());
     }
 
     /**
