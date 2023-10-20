@@ -247,7 +247,29 @@ public class ConcreteSoundWave implements SoundWave {
 
     @Override
     public void scale(double scalingFactor) {
-        // TODO: Implement this method.
+        if(scalingFactor <= 0)
+        {
+            throw new IllegalArgumentException();
+        }
+       for(int i = 0; i < getChannelSize() ; i++)
+       {
+           leftChannel[i] = leftChannel[i] * scalingFactor;
+           rightChannel[i] = rightChannel[i] * scalingFactor;
+       }
+
+       for(int j = 0 ; j < getChannelSize() ; j++)
+       {
+           if(leftChannel[j] > 1 || leftChannel[j] < -1)
+           {
+               normalizeWave(leftChannel);
+           }
+           if(rightChannel[j] > 1 || rightChannel[j] < -1)
+           {
+               normalizeWave(rightChannel);
+
+           }
+       }
+
     }
 
     @Override
