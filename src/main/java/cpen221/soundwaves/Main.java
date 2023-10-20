@@ -7,7 +7,7 @@ import cpen221.soundwaves.soundutils.SoundWaveChart;
 
 import java.util.Arrays;
 
-import static cpen221.soundwaves.soundutils.FilterType.HIGHPASS;
+import static cpen221.soundwaves.soundutils.FilterType.*;
 
 /**
  * <p>Simple <code>Main</code> class to demonstrate how
@@ -26,11 +26,12 @@ import static cpen221.soundwaves.soundutils.FilterType.HIGHPASS;
 public class Main {
 
     public static void main(String[] args) {
-        SoundWave wave1 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
-        SoundWave wave2 = SinusoidalWave.getInstance(2205.0, 0, 0.7, 100.0 / SoundWave.SAMPLES_PER_SECOND);
-        SoundWave wave3 = wave1.add(wave2);
-        wave3.filter(HIGHPASS, 2000.0);
-        wave3.highestAmplitudeFrequencyComponent();
+        SoundWave wave7 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave8 = SinusoidalWave.getInstance(2205.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave9 = wave8.add(wave7);
+        SoundWave wave9f = wave9.filter(BANDPASS, 500.0, 3000.0);
+
+
 //        examplePlayMP3file();
 //        examplePlayWAVfile();
         exampleSineWaveWithChart();

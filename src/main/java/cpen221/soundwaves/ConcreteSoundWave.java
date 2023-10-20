@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static cpen221.soundwaves.soundutils.FilterType.*;
+
 public class ConcreteSoundWave implements SoundWave {
     private double[] leftChannel;
     private double[] rightChannel;
@@ -341,27 +343,6 @@ public class ConcreteSoundWave implements SoundWave {
         return new ConcreteSoundWave(newLChannel, newRChannel);
     }
 
-    /**
-     * Performs the discrete Fourier transform on a sequence of samples.
-     * Frequency resolution of terms is 44100 / N
-     * Any frequency above the Nyquist limit can be ignored (44100 / 2)
-     *
-     * @param channel:  channel to perform DFT on
-     * @return sequence transformed by DFT
-     */
-    private static double[] DFT(double[] channel) {
-        int N = channel.length;
-        double[] transformedChannel = new double[N];
-        for (int k = 0; k < N; k++) {
-            ComplexNumber sumTerm = new ComplexNumber(0,0);
-            for (int t = 0; t < N; t++) {
-                sumTerm.add(channel[t] * Math.cos(2 * Math.PI * k * t / N),channel[t] * -Math.sin(2 * Math.PI * k * t / N));
-            }
-            transformedChannel[k] = ComplexNumber.mod(sumTerm);
-        }
-        return transformedChannel;
-    }
-
 
     /**
      * Computes the highest amplitude frequency component of both channels.
@@ -379,8 +360,8 @@ public class ConcreteSoundWave implements SoundWave {
             checkRep();
         }
         double freqRes = SAMPLES_PER_SECOND / (double) getChannelSize();
-        double[] rightDFT = DFT(getRightChannel());
-        double[] leftDFT = DFT(getLeftChannel());
+        double[] rightDFT = DFT.turnDFTReal(DFT.performDFT(getRightChannel()));
+        double[] leftDFT = DFT.turnDFTReal(DFT.performDFT(getLeftChannel()));
         double[] combinedDFT = new double[rightDFT.length];
 
         for (int i = 0; i < rightDFT.length; i++) {
@@ -405,35 +386,16 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Computes inverse discrete Fourier transform on a transformed sequence.
-     *
-     * @param seqDFT: transformed sequence to be inversed
-     * @return the inversed DFT sequence
-     */
-    private double[] inverseDFT(double[] seqDFT) {
-        int N = seqDFT.length;
-        double[] inverseDFT = new double[N];
-
-        for (int t = 0; t < N; t++) {
-            ComplexNumber sumTerm = new ComplexNumber(0, 0);
-            for (int k = 0; k < N; k++) {
-                sumTerm.add(seqDFT[k] * Math.cos(2 * Math.PI * k * t / N), Math.sin(2 * Math.PI * k * t / N));
-            }
-            sumTerm = new ComplexNumber(sumTerm.getReal() / N, sumTerm.getImaginary() / N);
-            inverseDFT[t] = ComplexNumber.mod(sumTerm);
-        }
-        return inverseDFT;
-    }
-
-    /**
      * Filters the left and right channels of the ConcreteSoundWave, by type:
      * HIGHPASS: filters all frequencies < the maximum frequency provided
      * BANDPASS: filters all frequencies not in between the two specifies frequencies
      * LOWPASS: filters all frequencies > minimum provided frequency
      *
-     * @param type the type of filter to apply (HIGHPASS, BANDPASS, LOWPASS)
-     * @param frequencies the frequencies to use for filtering
-     * @return the filtered ConcreteSoundWave
+     * @param type: type of filter to apply
+     *              requires that type is valid (HIGHPASS, BANDPASS, LOWPASS)
+     * @param frequencies: frequencies to use for filtering
+     * @return  the filtered ConcreteSoundWave if valid filter type,
+     *          else returns unchanged ConcreteSoundWave
      */
     @Override
     public SoundWave filter(FilterType type, Double... frequencies) {
@@ -442,11 +404,12 @@ public class ConcreteSoundWave implements SoundWave {
         // (2) one use of enums.
 
         if (frequencies.length > 2) {
-            System.out.println("Error");
+            System.out.println("Error, too many frequencies");
             return new ConcreteSoundWave(getLeftChannel(), getRightChannel());
         }
-        else {
-            System.out.println(frequencies[0]);
+        else if (type != LOWPASS && type != BANDPASS && type != HIGHPASS){
+            System.out.println("Error, invalid filter");
+            return new ConcreteSoundWave(getLeftChannel(), getRightChannel());
         }
 
         if (debug) {
@@ -464,38 +427,55 @@ public class ConcreteSoundWave implements SoundWave {
             filterFreqMin = Math.min(frequencies[0], frequencies[1]);
         }
 
-        double[] rightDFT = DFT(getRightChannel());
-        double[] leftDFT = DFT(getLeftChannel());
+        ComplexNumber[] rightDFT = DFT.performDFT(getRightChannel());
+        ComplexNumber[] leftDFT = DFT.performDFT(getLeftChannel());
         double N = rightDFT.length;
+        double freqRes = SAMPLES_PER_SECOND / N;
 
         switch (type) {
             case LOWPASS:
-                for (int t = 0; t < N; t++) {
-                    if (SAMPLES_PER_SECOND / N * t > filterFreqMin) {
-                        rightDFT[t] = 0.0;
-                        leftDFT[t] = 0.0;
+                for (int t = 0; t < (int) N; t++) {
+                    if (freqRes * t > filterFreqMin && freqRes * t < NYQUIST_LIMIT) {
+                        rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                        leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                    } else if (freqRes * t < SAMPLES_PER_SECOND - filterFreqMin && freqRes * t > NYQUIST_LIMIT) {
+                        rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                        leftDFT[t] = new ComplexNumber(0.0, 0.0);
                     }
                 }
+                break;
             case BANDPASS:
-                for (int t = 0; t < N; t++) {
-                if (SAMPLES_PER_SECOND / N * t > filterFreqMax || SAMPLES_PER_SECOND / N * t < filterFreqMin) {
-                    rightDFT[t] = 0.0;
-                    leftDFT[t] = 0.0;
+                for (int t = 0; t < (int) N; t++) {
+                if (freqRes * t > filterFreqMax || freqRes * t < filterFreqMin && freqRes * t < NYQUIST_LIMIT) {
+                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                } else if ((freqRes * t < SAMPLES_PER_SECOND - filterFreqMax || freqRes * t > SAMPLES_PER_SECOND - filterFreqMin) && freqRes * t > NYQUIST_LIMIT) {
+                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
                 }
             }
+                break;
             case HIGHPASS:
-                for (int t = 0; t < N; t++) {
-                if (SAMPLES_PER_SECOND / N * t < filterFreqMax) {
-                    rightDFT[t] = 0.0;
-                    leftDFT[t] = 0.0;
+                for (int t = 0; t < (int) N; t++) {
+                if (freqRes * t < filterFreqMax && freqRes * t < NYQUIST_LIMIT) {
+                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                } else if (freqRes * t > SAMPLES_PER_SECOND - filterFreqMax && freqRes * t > NYQUIST_LIMIT) {
+                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
                 }
             }
+                break;
             default: break;
         }
+
+        double[] leftFiltered = DFT.turnIntoWave(leftDFT);
+        double[] rightFiltered = DFT.turnIntoWave(rightDFT);
 
         if (debug) {
             checkRep();
         }
-        return new ConcreteSoundWave(inverseDFT(leftDFT), inverseDFT(rightDFT));
+
+        return new ConcreteSoundWave(leftFiltered, rightFiltered);
     }
 }

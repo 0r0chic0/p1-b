@@ -9,8 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-import static cpen221.soundwaves.soundutils.FilterType.HIGHPASS;
-import static cpen221.soundwaves.soundutils.FilterType.LOWPASS;
+import static cpen221.soundwaves.soundutils.FilterType.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SmokeTests {
@@ -214,7 +213,13 @@ public class SmokeTests {
         SoundWave wave5 = SinusoidalWave.getInstance(2205.0, 0, 0.7, 100.0 / SoundWave.SAMPLES_PER_SECOND);
         SoundWave wave6 = wave4.add(wave5);
         SoundWave wave6f = wave6.filter(LOWPASS, 500.0);
-        assertEquals(441.0, wave6.highestAmplitudeFrequencyComponent());
+        assertEquals(441.0, wave6f.highestAmplitudeFrequencyComponent());
+
+        SoundWave wave7 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave8 = SinusoidalWave.getInstance(2205.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave9 = wave8.add(wave7);
+        SoundWave wave9f = wave9.filter(BANDPASS, 500.0, 3000.0);
+        assertEquals(2205.0, wave9f.highestAmplitudeFrequencyComponent());
     }
 
     /**
