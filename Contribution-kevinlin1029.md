@@ -1,1 +1,3 @@
 - Wrote getInstance for SquareWave
+- wrote Appending Waves
+- wrote addEcho method

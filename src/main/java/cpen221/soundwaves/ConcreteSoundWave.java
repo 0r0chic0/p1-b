@@ -244,12 +244,67 @@ public class ConcreteSoundWave implements SoundWave {
     @Override
     public SoundWave addEcho(double delta, double alpha) {
         // TODO: Implement this method
-        return null; // change this
+        double[] leftChannel = this.getLeftChannel();
+        double[] rightChannel = this.getRightChannel();
+
+
+        double[] newLeftChannel = new double[leftChannel.length];
+        double[] newRightChannel = new double[rightChannel.length];
+
+
+        double maxAmplitude = 0;
+
+
+        for (int i = 0; i < leftChannel.length; i++) {
+            int echoIndex = i - (int) delta;
+
+            double echoLeft = (echoIndex >= 0) ? leftChannel[echoIndex] * alpha : 0;
+            double echoRight = (echoIndex >= 0) ? rightChannel[echoIndex] * alpha : 0;
+
+            newLeftChannel[i] = leftChannel[i] + echoLeft;
+            newRightChannel[i] = rightChannel[i] + echoRight;
+
+
+            maxAmplitude = Math.max(maxAmplitude, Math.abs(newLeftChannel[i]));
+            maxAmplitude = Math.max(maxAmplitude, Math.abs(newRightChannel[i]));
+        }
+
+
+        if (maxAmplitude > 1.0) {
+            for (int i = 0; i < newLeftChannel.length; i++) {
+                newLeftChannel[i] /= maxAmplitude;
+                newRightChannel[i] /= maxAmplitude;
+            }
+        }
+
+        return new ConcreteSoundWave(newLeftChannel, newRightChannel);
     }
 
     @Override
     public void scale(double scalingFactor) {
-        // TODO: Implement this method.
+        if(scalingFactor <= 0)
+        {
+            throw new IllegalArgumentException();
+        }
+       for(int i = 0; i < getChannelSize() ; i++)
+       {
+           leftChannel[i] = leftChannel[i] * scalingFactor;
+           rightChannel[i] = rightChannel[i] * scalingFactor;
+       }
+
+       for(int j = 0 ; j < getChannelSize() ; j++)
+       {
+           if(leftChannel[j] > 1 || leftChannel[j] < -1)
+           {
+               normalizeWave(leftChannel);
+           }
+           if(rightChannel[j] > 1 || rightChannel[j] < -1)
+           {
+               normalizeWave(rightChannel);
+
+           }
+       }
+
     }
 
     @Override

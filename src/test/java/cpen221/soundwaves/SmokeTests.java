@@ -222,6 +222,26 @@ public class SmokeTests {
         assertEquals(2205.0, wave9f.highestAmplitudeFrequencyComponent());
     }
 
+    @Test
+    public void testSimilarityWithIdenticalWaves() {
+
+        double[] leftChannel = {0.1, 0.2, 0.3};
+        double[] rightChannel = {0.1, 0.2, 0.3};
+
+        ConcreteSoundWave wave1 = new ConcreteSoundWave(leftChannel, rightChannel);
+        ConcreteSoundWave wave2 = new ConcreteSoundWave(leftChannel, rightChannel);
+
+        wave1.scale(0.99);
+        wave2.scale(0.99);
+
+
+        double similarity = wave1.similarity(wave2);
+
+
+        assertEquals(1.0, similarity, 0.01);
+    }
+
+
     /**
      * Generate a random signal of length 100.
      *
