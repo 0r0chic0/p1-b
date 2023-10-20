@@ -22,6 +22,12 @@ public class DFT {
         return transformedSequence;
     }
 
+    /**
+     * Computes modulus of all numbers in sequence
+     *
+     * @param sequence: sequence to be computed on
+     * @return the sequence of moduli of original sequence
+     */
     public static double[] turnDFTReal(ComplexNumber[] sequence) {
         int N = sequence.length;
         double[] realSequence = new double[N];

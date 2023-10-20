@@ -454,10 +454,9 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public SoundWave filter(FilterType type, Double... frequencies) {
-        // The provided code illustrates -- rather simply -- two ideas:
-        // (1) the use of varargs, and
-        // (2) one use of enums.
-
+        if (debug) {
+            checkRep();
+        }
         if (frequencies.length > 2) {
             System.out.println("Error, too many frequencies");
             return new ConcreteSoundWave(getLeftChannel(), getRightChannel());
@@ -465,10 +464,6 @@ public class ConcreteSoundWave implements SoundWave {
         else if (type != LOWPASS && type != BANDPASS && type != HIGHPASS){
             System.out.println("Error, invalid filter");
             return new ConcreteSoundWave(getLeftChannel(), getRightChannel());
-        }
-
-        if (debug) {
-            checkRep();
         }
 
         double filterFreqMin;

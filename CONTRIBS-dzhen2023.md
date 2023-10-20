@@ -5,3 +5,4 @@
 - Wrote DFT and inverse DFT methods
 - Wrote the filter method
 - Wrote the highestAmplitudeFrequencyComponent method
+- Wrote ComplexNumber class and its methods
