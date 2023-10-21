@@ -15,9 +15,9 @@ public class SimilarPair {
     //          p.similarity = r.wave1.similarity(r.wave2)
 
     // The rep invariant is
-    //      wave1 does not change
-    //      wave2 does not change
-    //      similarity does not change
+    //      wave1 is the same SoundWave as initialized
+    //      wave2 is the same SoundWave as initialized
+    //      similarity is the same value as initialized
 
     /**
      * Constructs an instance of SimilarPair
@@ -25,7 +25,7 @@ public class SimilarPair {
      * @param wave1: first {@code SoundWave} of the pair
      * @param wave2: second {@code SoundWave} of the pair
      */
-    public SimilarPair (SoundWave wave1, SoundWave wave2) {
+    public SimilarPair(SoundWave wave1, SoundWave wave2) {
         this.wave1 = new ConcreteSoundWave(wave1.getLeftChannel(), wave1.getRightChannel());
         this.wave2 = new ConcreteSoundWave(wave2.getLeftChannel(), wave2.getRightChannel());
         similarity = wave1.similarity(wave2);

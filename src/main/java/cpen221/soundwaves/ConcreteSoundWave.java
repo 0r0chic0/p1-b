@@ -21,9 +21,12 @@ public class ConcreteSoundWave implements SoundWave {
     //          w.rightChannel = r.rightChannel
 
     private void checkRep() {
-        assert Arrays.stream(leftChannel).allMatch(i -> i <= 1.0 && i >= -1.0): "leftChannel should only contain values in [-1, 1]";
-        assert Arrays.stream(rightChannel).allMatch(i -> i <= 1.0 && i >= -1.0): "rightChannel should only contain values in [-1, 1]";
-        assert rightChannel.length == leftChannel.length: "rightChannel and leftChannel should have equal samples";
+        assert Arrays.stream(leftChannel).allMatch(i -> i <= 1.0 && i >= -1.0)
+                : "leftChannel should only contain values in [-1, 1]";
+        assert Arrays.stream(rightChannel).allMatch(i -> i <= 1.0 && i >= -1.0)
+                : "rightChannel should only contain values in [-1, 1]";
+        assert rightChannel.length == leftChannel.length
+                : "rightChannel and leftChannel should have equal samples";
     }
 
     /**
@@ -93,11 +96,11 @@ public class ConcreteSoundWave implements SoundWave {
     public void append(double[] lchannel, double[] rchannel) {
         double[] templ = new double[lchannel.length + leftChannel.length];
         double[] tempr = new double[rchannel.length + rightChannel.length];
-        for (int i = 0; i < leftChannel.length;i++) {
+        for (int i = 0; i < leftChannel.length; i++) {
             templ[i] = leftChannel[i];
         }
         for (int i = 0; i < lchannel.length; i++) {
-            templ[leftChannel.length+i] = lchannel[i];
+            templ[leftChannel.length + i] = lchannel[i];
         }
         for (int i = 0; i < rightChannel.length; i++) {
             tempr[i] = rightChannel[i];
@@ -263,25 +266,29 @@ public class ConcreteSoundWave implements SoundWave {
         if (debug) {
             checkRep();
         }
-        double[] leftChannel = this.getLeftChannel();
-        double[] rightChannel = this.getRightChannel();
+
+        double[] lChannel = this.getLeftChannel();
+        double[] rChannel = this.getRightChannel();
 
         for (int i = 0; i < getChannelSize(); i++) {
-            if (i - (int) (delta * 44100.0) >= 0) {
-                leftChannel[i] += alpha * leftChannel[i - (int) (delta * 44100.0)];
-                rightChannel[i] += alpha * rightChannel[i - (int) (delta * 44100.0)];
+            if (i - (int) (delta * SAMPLES_PER_SECOND) >= 0) {
+                lChannel[i] += alpha * lChannel[i - (int) (delta * SAMPLES_PER_SECOND)];
+                rChannel[i] += alpha * rChannel[i - (int) (delta * SAMPLES_PER_SECOND)];
             }
         }
-        normalizeWave(leftChannel);
-        normalizeWave(rightChannel);
+
+        normalizeWave(lChannel);
+        normalizeWave(rChannel);
+
         if (debug) {
             checkRep();
         }
-        return new ConcreteSoundWave(leftChannel, rightChannel);
+
+        return new ConcreteSoundWave(lChannel, rChannel);
     }
 
     /**
-     * Scales the audio
+     * Scales the {@code SoundWave} by a scalingFactor
      *
      * @param scalingFactor is a value > 0.
      */
@@ -291,38 +298,43 @@ public class ConcreteSoundWave implements SoundWave {
             checkRep();
         }
 
-        if (scalingFactor <= 0)
-        {
+        if (scalingFactor <= 0) {
             return;
         }
 
-       for (int i = 0; i < getChannelSize() ; i++)
-       {
-           leftChannel[i] = leftChannel[i] * scalingFactor;
-           rightChannel[i] = rightChannel[i] * scalingFactor;
-       }
+        for (int i = 0; i < getChannelSize(); i++) {
+            leftChannel[i] = leftChannel[i] * scalingFactor;
+            rightChannel[i] = rightChannel[i] * scalingFactor;
+        }
 
-       normalizeWave(leftChannel);
-       normalizeWave(rightChannel);
+        normalizeWave(leftChannel);
+        normalizeWave(rightChannel);
 
-       if (debug) {
-           checkRep();
-       }
+        if (debug) {
+            checkRep();
+        }
     }
 
+    /**
+     * Determines if {@code SoundWave} other occurs in this {@code SoundWave}
+     *
+     * @param other is the wave to search for in this wave.
+     * @return true if other is in this {@code SoundWave}
+     */
     @Override
     public boolean contains(SoundWave other) {
-        // TODO: Implement this method
-        if(this.leftChannel.length!=other.getLeftChannel().length||this.rightChannel.length!=other.getRightChannel().length){
+        if (this.leftChannel.length != other.getLeftChannel().length
+                || this.rightChannel.length != other.getRightChannel().length) {
             return false;
         }
-        double scale = other.getLeftChannel()[0]/this.leftChannel[0];
+        double scale = other.getLeftChannel()[0] / this.leftChannel[0];
         for (int i = 1; i < this.leftChannel.length; i++) {
-            if(other.getLeftChannel()[i]/this.leftChannel[i]!=scale||other.getRightChannel()[i]/this.rightChannel[i]!=scale){
+            if (other.getLeftChannel()[i] / this.leftChannel[i] != scale
+                    || other.getRightChannel()[i] / this.rightChannel[i] != scale) {
                 return false;
             }
         }
-        return true; // change this
+        return true;
     }
 
     /**
@@ -367,7 +379,7 @@ public class ConcreteSoundWave implements SoundWave {
                 scalingTermR2 = 0.0;
             } else {
                 scalingTermR1 = w1R.get(i) / w2R.get(i);
-                scalingTermR2 = w2R.get(i) / w1R.get(i) ;
+                scalingTermR2 = w2R.get(i) / w1R.get(i);
             }
 
             scalingSumL1 += scalingTermL1;
@@ -403,6 +415,15 @@ public class ConcreteSoundWave implements SoundWave {
         return (gamma1 + gamma2) / 2.0;
     }
 
+    /**
+     * Computes the gamma element in similarity computation
+     * g(wave1, wave2) = 1 / (1 + sum_{j=1}^{2} sum_t (w_{1,j}(t) - Bw_{2,j}(t))^2,
+     * where B is scaling factor > 0, w_1 = wave1, w_2 = wave2, j = channel.
+     *
+     * @param wave1: first {@code SoundWave}
+     * @param wave2: second {@code SoundWave}
+     * @return the gamma value g(wave1, wave2)
+     */
     private static double gamma(SoundWave wave1, SoundWave wave2) {
         List<Double> w1R = wave1.getRightChannelList();
         List<Double> w1L = wave1.getLeftChannelList();
@@ -410,6 +431,7 @@ public class ConcreteSoundWave implements SoundWave {
         List<Double> w2L = wave2.getLeftChannelList();
         double sum1 = 0;
         double sum2 = 0;
+
         for (int i = 0; i < w1L.size() || i < w2L.size(); i++) {
             extendWaveList(i, w1L, w1R);
             extendWaveList(i, w2L, w1R);
@@ -446,14 +468,14 @@ public class ConcreteSoundWave implements SoundWave {
 
 
     /**
-     * Computes the highest amplitude frequency component of both channels.
-     * Ignores any values above the Nyquist limit.
+     * Computes the highest amplitude frequency component
+     * of a {@code SoundWave} that is periodic using the discrete Fourier transform.
      * The frequency components of a discrete Fourier transformed sequence will
      * only contain frequency multiples of the frequency resolution (44,100 / N)
      * if N is the number of elements in a sequence.
-     * So, less samples results in less frequency accuracy.
      *
-     * @return the frequency of the highest value in the fourier transformed sequence
+     * @return  the frequency of the largest value in the fourier transformed sequence,
+     *          that is within the Nyquist limit (44,100 / 2)
      */
     @Override
     public double highestAmplitudeFrequencyComponent() {
@@ -487,7 +509,7 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Filters the left and right channels of the ConcreteSoundWave, by type:
+     * Filters the left and right channels of the {@code SoundWave} by type.
      * HIGHPASS: filters all frequencies < the maximum frequency provided
      * BANDPASS: filters all frequencies not in between the two specifies frequencies
      * LOWPASS: filters all frequencies > minimum provided frequency
@@ -495,8 +517,8 @@ public class ConcreteSoundWave implements SoundWave {
      * @param type: type of filter to apply
      *              requires that type is valid (HIGHPASS, BANDPASS, LOWPASS)
      * @param frequencies: frequencies to use for filtering
-     * @return  the filtered ConcreteSoundWave if valid filter type,
-     *          else returns unchanged ConcreteSoundWave
+     * @return  the filtered {@code SoundWave} if valid filter type,
+     *          else returns unchanged {@code SoundWave}
      */
     @Override
     public SoundWave filter(FilterType type, Double... frequencies) {
@@ -506,8 +528,7 @@ public class ConcreteSoundWave implements SoundWave {
         if (frequencies.length > 2) {
             System.out.println("Error, too many frequencies");
             return new ConcreteSoundWave(getLeftChannel(), getRightChannel());
-        }
-        else if (type != LOWPASS && type != BANDPASS && type != HIGHPASS){
+        } else if (type != LOWPASS && type != BANDPASS && type != HIGHPASS) {
             System.out.println("Error, invalid filter");
             return new ConcreteSoundWave(getLeftChannel(), getRightChannel());
         }
@@ -542,25 +563,26 @@ public class ConcreteSoundWave implements SoundWave {
                 break;
             case BANDPASS:
                 for (int t = 0; t < (int) N; t++) {
-                if (freqRes * t > filterFreqMax || freqRes * t < filterFreqMin && freqRes * t < NYQUIST_LIMIT) {
-                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
-                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
-                } else if ((freqRes * t < SAMPLES_PER_SECOND - filterFreqMax || freqRes * t > SAMPLES_PER_SECOND - filterFreqMin) && freqRes * t > NYQUIST_LIMIT) {
-                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
-                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                    if (freqRes * t > filterFreqMax || freqRes * t < filterFreqMin && freqRes * t < NYQUIST_LIMIT) {
+                        rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                        leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                    } else if ((freqRes * t < SAMPLES_PER_SECOND - filterFreqMax
+                            || freqRes * t > SAMPLES_PER_SECOND - filterFreqMin) && freqRes * t > NYQUIST_LIMIT) {
+                        rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                        leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                    }
                 }
-            }
                 break;
             case HIGHPASS:
                 for (int t = 0; t < (int) N; t++) {
-                if (freqRes * t < filterFreqMax && freqRes * t < NYQUIST_LIMIT) {
-                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
-                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
-                } else if (freqRes * t > SAMPLES_PER_SECOND - filterFreqMax && freqRes * t > NYQUIST_LIMIT) {
-                    rightDFT[t] = new ComplexNumber(0.0, 0.0);
-                    leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                    if (freqRes * t < filterFreqMax && freqRes * t < NYQUIST_LIMIT) {
+                        rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                        leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                    } else if (freqRes * t > SAMPLES_PER_SECOND - filterFreqMax && freqRes * t > NYQUIST_LIMIT) {
+                        rightDFT[t] = new ComplexNumber(0.0, 0.0);
+                        leftDFT[t] = new ComplexNumber(0.0, 0.0);
+                    }
                 }
-            }
                 break;
             default: break;
         }
@@ -582,7 +604,8 @@ public class ConcreteSoundWave implements SoundWave {
         }
         ConcreteSoundWave wave = (ConcreteSoundWave) o;
 
-        return Arrays.equals(getRightChannel(), wave.getRightChannel()) && Arrays.equals(getLeftChannel(), wave.getLeftChannel());
+        return Arrays.equals(getRightChannel(), wave.getRightChannel())
+                && Arrays.equals(getLeftChannel(), wave.getLeftChannel());
     }
 
     @Override

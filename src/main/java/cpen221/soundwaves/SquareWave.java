@@ -1,7 +1,5 @@
 package cpen221.soundwaves;
 
-import java.util.Arrays;
-
 public class SquareWave extends ConcreteSoundWave {
     public static final double SECONDS_PER_SAMPLE = 1.0 / SAMPLES_PER_SECOND;
 

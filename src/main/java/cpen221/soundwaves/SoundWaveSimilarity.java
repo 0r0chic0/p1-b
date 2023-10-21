@@ -41,6 +41,7 @@ public class SoundWaveSimilarity {
             }
         }
 
+        // Use SimilarPair data type to get a list of pairs
         List<SoundWave> audioList = audioDataset.stream().toList();
 
 
