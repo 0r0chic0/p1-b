@@ -6,3 +6,7 @@
 - Wrote the filter method
 - Wrote the highestAmplitudeFrequencyComponent method
 - Wrote ComplexNumber class and its methods
+- Wrote Similarity method
+- Wrote tests for Similarity Method
+- Wrote tests for scale
+- Wrote tests for addEcho
