@@ -10,3 +10,4 @@
 - Wrote tests for Similarity Method
 - Wrote tests for scale
 - Wrote tests for addEcho
+- Wrote similarPair class
