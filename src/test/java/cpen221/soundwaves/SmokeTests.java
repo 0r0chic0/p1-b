@@ -124,8 +124,8 @@ public class SmokeTests {
 
         SoundWave test1 = new ConcreteSoundWave(leftChannel, rightChannel);
         SoundWave result = test1.addEcho(2.0 / 44100.0, 0.5);
-        double[] leftAfter = {0.3, 0.25, -0.35, 0.2};
-        double[] rightAfter = {0.4, 0.4, -0.2, 0.3};
+        double[] leftAfter = {0.3, 0.1, -0.25, 0.25};
+        double[] rightAfter = {0.4, 0.2, -0.1, 0.4};
         assertArrayEquals(leftAfter, result.getLeftChannel(), 0.0001);
         assertArrayEquals(rightAfter, result.getRightChannel(), 0.0001);
     }

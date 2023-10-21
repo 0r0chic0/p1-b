@@ -267,12 +267,11 @@ public class ConcreteSoundWave implements SoundWave {
         double[] leftChannel = this.getLeftChannel();
         double[] rightChannel = this.getRightChannel();
 
-
-
-        for (int i = (int) delta; i < leftChannel.length; i++) {
-
-            leftChannel[i] += alpha * leftChannel[i - (int) delta];
-            rightChannel[i] += alpha * rightChannel[i - (int) delta];
+        for (int i = 0; i < getChannelSize(); i++) {
+            if (i - (int) (delta * 44100.0) >= 0) {
+                leftChannel[i] += alpha * leftChannel[i - (int) (delta * 44100.0)];
+                rightChannel[i] += alpha * rightChannel[i - (int) (delta * 44100.0)];
+            }
         }
         normalizeWave(leftChannel);
         normalizeWave(rightChannel);
