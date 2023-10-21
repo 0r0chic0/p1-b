@@ -27,13 +27,13 @@ import static cpen221.soundwaves.soundutils.FilterType.*;
 public class Main {
 
     public static void main(String[] args) {
-        double[] Channel1 = {0.0 ,0.1, 0.2, 0.3};
-        double[] Channel2 = {0.1 ,0.3, -0.1, -0.4};
-
-        ConcreteSoundWave wave1 = new ConcreteSoundWave(Channel1, Channel1);
-        ConcreteSoundWave wave2 = new ConcreteSoundWave(Channel2, Channel2);
-
-        double similarity = wave1.similarity(wave2);
+        double freq = 6000;
+        double phase = 0.0;
+        double amplitude = 1.0;
+        double duration = 5.0 / 44100.0;
+        SoundWave sw1 = SquareWave.getInstance(freq, phase, amplitude, duration);
+        double[] left = {1, 1, 1, 1, -1};
+        double[] right = {1, 1, 1, 1, -1};
 
 //        examplePlayMP3file();
 //        examplePlayWAVfile();
