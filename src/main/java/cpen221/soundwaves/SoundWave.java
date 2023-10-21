@@ -40,8 +40,8 @@ public interface SoundWave {
     /**
      * Append a wave to this wave.
      *
-     * @param lchannel
-     * @param rchannel
+     * @param lchannel the left channel to append
+     * @param rchannel the right channel to append
      */
     public void append(double[] lchannel, double[] rchannel);
 

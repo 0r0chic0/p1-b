@@ -110,6 +110,37 @@ public class SmokeTests {
         assertArrayEquals(rightAfter, sw1.getRightChannel(), 0.0001);
     }
 
+    @Test
+    public void testAddEcho1() {
+        SoundWave wave1 = SinusoidalWave.getInstance(2205.0, 0.0, 0.7, 50.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave2 = wave1.addEcho(0.0, 0.0);
+        assertTrue(wave1.equals(wave2));
+    }
+
+    @Test
+    public void testAddEcho2() {
+        double[] leftChannel = {0.3, 0.1, -0.4, 0.2};
+        double[] rightChannel = {0.4, 0.2, -0.3, 0.3};
+
+        SoundWave test1 = new ConcreteSoundWave(leftChannel, rightChannel);
+        SoundWave result = test1.addEcho(2.0 / 44100.0, 0.5);
+        double[] leftAfter = {0.3, 0.25, -0.35, 0.2};
+        double[] rightAfter = {0.4, 0.4, -0.2, 0.3};
+        assertArrayEquals(leftAfter, result.getLeftChannel(), 0.0001);
+        assertArrayEquals(rightAfter, result.getRightChannel(), 0.0001);
+    }
+
+    @Test
+    public void testAddEcho3() {
+        double[] leftChannel = {0.3, 0.1, -0.4, 0.2};
+        double[] rightChannel = {0.4, 0.2, -0.3, 0.3};
+
+        SoundWave test1 = new ConcreteSoundWave(leftChannel, rightChannel);
+        SoundWave result2 = test1.addEcho(4.0 / 44100.0, 1.0);
+        assertArrayEquals(leftChannel, result2.getLeftChannel(), 0.0001);
+        assertArrayEquals(rightChannel, result2.getRightChannel(), 0.0001);
+    }
+
     /**
      * SoundWave add(SoundWave other)
      * Create a new wave by adding another wave to this wave.
@@ -216,10 +247,14 @@ public class SmokeTests {
         assertEquals(441.0, wave6f.highestAmplitudeFrequencyComponent());
 
         SoundWave wave7 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
-        SoundWave wave8 = SinusoidalWave.getInstance(2205.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave8 = SinusoidalWave.getInstance(2646.0, 0, 0.70, 100.0 / SoundWave.SAMPLES_PER_SECOND);
         SoundWave wave9 = wave8.add(wave7);
         SoundWave wave9f = wave9.filter(BANDPASS, 500.0, 3000.0);
-        assertEquals(2205.0, wave9f.highestAmplitudeFrequencyComponent());
+        assertEquals(2646.0, wave9f.highestAmplitudeFrequencyComponent());
+
+        SoundWave wave10 = wave9.add(wave6);
+        SoundWave wave10f = wave10.filter(LOWPASS, 500.0);
+        assertEquals(441.0, wave10f.highestAmplitudeFrequencyComponent());
     }
 
     @Test

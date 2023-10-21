@@ -1,7 +1,6 @@
 package cpen221.soundwaves;
 
 import cpen221.soundwaves.soundutils.FilterType;
-import jdk.jfr.Frequency;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +44,11 @@ public class ConcreteSoundWave implements SoundWave {
         }
     }
 
+    /**
+     * Gets left channel of sound wave.
+     *
+     * @return a copy of the sound wave's left channel
+     */
     @Override
     public double[] getLeftChannel() {
         if (debug) {
@@ -53,6 +57,11 @@ public class ConcreteSoundWave implements SoundWave {
         return leftChannel.clone();
     }
 
+    /**
+     * Gets right channel of sound wave.
+     *
+     * @return a copy of the sound wave's right channel
+     */
     @Override
     public double[] getRightChannel() {
         if (debug) {
@@ -83,35 +92,38 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public void append(double[] lchannel, double[] rchannel) {
-        // TODO: Implement this method.
-        double[] templ = new double[lchannel.length+leftChannel.length];
-        double[] tempr = new double[rchannel.length+rightChannel.length];
-        for (int i=0;i<leftChannel.length;i++) {
+        double[] templ = new double[lchannel.length + leftChannel.length];
+        double[] tempr = new double[rchannel.length + rightChannel.length];
+        for (int i = 0; i < leftChannel.length;i++) {
             templ[i] = leftChannel[i];
         }
         for (int i = 0; i < lchannel.length; i++) {
             templ[leftChannel.length+i] = lchannel[i];
         }
-        for (int i=0;i<rightChannel.length;i++) {
+        for (int i = 0; i < rightChannel.length; i++) {
             tempr[i] = rightChannel[i];
         }
         for (int i = 0; i < rchannel.length; i++) {
-            tempr[rightChannel.length+i] = rchannel[i];
+            tempr[rightChannel.length + i] = rchannel[i];
         }
         leftChannel = templ;
         rightChannel = tempr;
     }
 
+    /**
+     * Appends a sound wave other onto the sound wave.
+     *
+     * @param other: sound wave to append on
+     */
     @Override
     public void append(SoundWave other) {
-        // TODO: Implement this method.
-        append(other.getLeftChannel(),other.getRightChannel());
+        append(other.getLeftChannel(), other.getRightChannel());
     }
 
     /**
-     * Superimposes a wave other to SoundWave.
+     * Superimposes a sound wave other to SoundWave.
      *
-     * @param other: wave to superimpose to SoundWave
+     * @param other: sound wave to superimpose to SoundWave
      * @return the superimposed wave with elements normalized to [-1,1]
      */
     @Override
@@ -209,7 +221,7 @@ public class ConcreteSoundWave implements SoundWave {
 
 
     /**
-     * Checks if a sample it is too high or low in amplitude and then normalizes it
+     * Checks if a sample is too high or low in amplitude and then normalizes it to be in [-1,1]
      *
      * @param channel: wave channel to normalize
      * @author dzhen2023
@@ -241,6 +253,15 @@ public class ConcreteSoundWave implements SoundWave {
         return getRightChannel().length;
     }
 
+    /**
+     *
+     * @param delta > 0. delta, in seconds, is the time lag between this wave and
+     *              the echo wave.
+     *              requires that delta is a multiple of 1 / 44100
+     * @param alpha > 0. alpha is the damping factor applied to the echo wave.
+     *
+     * @return
+     */
     @Override
     public SoundWave addEcho(double delta, double alpha) {
         // TODO: Implement this method
@@ -527,5 +548,20 @@ public class ConcreteSoundWave implements SoundWave {
         }
 
         return new ConcreteSoundWave(leftFiltered, rightFiltered);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ConcreteSoundWave)) {
+            return false;
+        }
+        ConcreteSoundWave wave = (ConcreteSoundWave) o;
+
+        return Arrays.equals(getRightChannel(), wave.getRightChannel()) && Arrays.equals(getLeftChannel(), wave.getLeftChannel());
+    }
+
+    @Override
+    public int hashCode() {
+        return getRightChannel().length + getLeftChannel().length;
     }
 }

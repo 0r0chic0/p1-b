@@ -26,10 +26,9 @@ import static cpen221.soundwaves.soundutils.FilterType.*;
 public class Main {
 
     public static void main(String[] args) {
-        SoundWave wave7 = SinusoidalWave.getInstance(441.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
-        SoundWave wave8 = SinusoidalWave.getInstance(2205.0, 0, 0.50, 100.0 / SoundWave.SAMPLES_PER_SECOND);
-        SoundWave wave9 = wave8.add(wave7);
-        SoundWave wave9f = wave9.filter(BANDPASS, 500.0, 3000.0);
+        SoundWave wave1 = SinusoidalWave.getInstance(2205.0, 0.0, 0.7, 50.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave2 = wave1.addEcho(0.0, 1.0);
+        wave1.equals(wave2);
 
 
 //        examplePlayMP3file();
