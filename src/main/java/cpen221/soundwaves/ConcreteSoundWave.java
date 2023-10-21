@@ -386,8 +386,8 @@ public class ConcreteSoundWave implements SoundWave {
 
         other.scale(beta1);
         double gamma1 = gamma(this, other);
-        this.scale(beta1);
-        other.scale(1 / beta2);
+        this.scale(beta2);
+        other.scale(1 / beta1);
         double gamma2 = gamma(other, this);
         this.scale(1 / beta2);
 
@@ -409,26 +409,6 @@ public class ConcreteSoundWave implements SoundWave {
         }
 
         return 1.0 / (1.0 + sum1 + sum2);
-    }
-
-    /**
-     * Checks if sound wave has the same channel in left and right
-     *
-     * @return true if left and right channels have same values
-     */
-    public boolean isSingleChannel() {
-        if (debug) {
-            checkRep();
-        }
-        for (int i = 0; i < getChannelSize(); i++) {
-            if (getLeftChannel()[0] != getRightChannel()[0]) {
-                return false;
-            }
-        }
-        if (debug) {
-            checkRep();
-        }
-        return true;
     }
 
     /**

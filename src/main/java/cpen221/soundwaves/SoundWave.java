@@ -131,6 +131,4 @@ public interface SoundWave {
     public List<Double> getRightChannelList();
 
     public List<Double> getLeftChannelList();
-
-    public boolean isSingleChannel();
 }

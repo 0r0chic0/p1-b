@@ -301,14 +301,30 @@ public class SmokeTests {
     @Test
     public void testSimilarityWithOppositeWaves() {
 
-        ConcreteSoundWave wave1 = SinusoidalWave.getInstance(1.0, 0.0, 0.5, 5.0 / 44100);
-        ConcreteSoundWave wave2 = SinusoidalWave.getInstance(1.0, Math.PI, 0.5, 5.0 / 44100);
+        double[] Channel1 = {0.1, 0.2, 0.3};
+        double[] Channel2 = {-0.1, -0.2, -0.3};
+
+        ConcreteSoundWave wave1 = new ConcreteSoundWave(Channel1, Channel1);
+        ConcreteSoundWave wave2 = new ConcreteSoundWave(Channel2, Channel2);
 
         double similarity = wave1.similarity(wave2);
 
-        assertEquals(1.0, similarity, 0.01);
+        assertEquals(0.78125, similarity, 0.01);
     }
 
+    @Test
+    public void testSimilarityOnBoundary() {
+
+        double[] Channel1 = {0.0 ,0.1, 0.2, 0.3};
+        double[] Channel2 = {0.1 ,0.3, -0.1, -0.4};
+
+        ConcreteSoundWave wave1 = new ConcreteSoundWave(Channel1, Channel1);
+        ConcreteSoundWave wave2 = new ConcreteSoundWave(Channel2, Channel2);
+
+        double similarity = wave1.similarity(wave2);
+
+        assertEquals(0.7153, similarity, 0.01);
+    }
 
     /**
      * Generate a random signal of length 100.
