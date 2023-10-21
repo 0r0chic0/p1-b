@@ -19,8 +19,8 @@ public class ConcreteSoundWave implements SoundWave {
     //          w.rightChannel = r.rightChannel
 
     private void checkRep() {
-        assert Arrays.stream(leftChannel).allMatch(i -> i <= 1 && i >= -1): "leftChannel should only contain values in [-1, 1]";
-        assert Arrays.stream(rightChannel).allMatch(i -> i <= 1 && i >= -1): "rightChannel should only contain values in [-1, 1]";
+        assert Arrays.stream(leftChannel).allMatch(i -> i <= 1.0 && i >= -1.0): "leftChannel should only contain values in [-1, 1]";
+        assert Arrays.stream(rightChannel).allMatch(i -> i <= 1.0 && i >= -1.0): "rightChannel should only contain values in [-1, 1]";
         assert rightChannel.length == leftChannel.length: "rightChannel and leftChannel should have equal samples";
     }
 
@@ -36,6 +36,9 @@ public class ConcreteSoundWave implements SoundWave {
      *                      and rightChannel is same length as leftChannel
      */
     public ConcreteSoundWave(double[] leftChannel, double[] rightChannel) {
+        if (leftChannel.length != rightChannel.length) {
+            throw new IllegalArgumentException("Channels need to be same length!");
+        }
         this.rightChannel = rightChannel;
         this.leftChannel = leftChannel;
 
@@ -51,9 +54,6 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public double[] getLeftChannel() {
-        if (debug) {
-            checkRep();
-        }
         return leftChannel.clone();
     }
 
@@ -64,9 +64,6 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public double[] getRightChannel() {
-        if (debug) {
-            checkRep();
-        }
         return rightChannel.clone();
     }
 
@@ -247,9 +244,6 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public int getChannelSize() {
-        if (debug) {
-            checkRep();
-        }
         return getRightChannel().length;
     }
 
@@ -260,10 +254,13 @@ public class ConcreteSoundWave implements SoundWave {
      *              requires that delta is a multiple of 1 / 44100
      * @param alpha > 0. alpha is the damping factor applied to the echo wave.
      *
-     * @return
+     * @return the ConcreteSoundWave with added echo
      */
     @Override
     public SoundWave addEcho(double delta, double alpha) {
+        if (debug) {
+            checkRep();
+        }
         double[] leftChannel = this.getLeftChannel();
         double[] rightChannel = this.getRightChannel();
 
@@ -275,35 +272,40 @@ public class ConcreteSoundWave implements SoundWave {
         }
         normalizeWave(leftChannel);
         normalizeWave(rightChannel);
-
+        if (debug) {
+            checkRep();
+        }
         return new ConcreteSoundWave(leftChannel, rightChannel);
     }
 
+    /**
+     * Scales the audio
+     *
+     * @param scalingFactor is a value > 0.
+     */
     @Override
     public void scale(double scalingFactor) {
-        if(scalingFactor <= 0)
-        {
-            throw new IllegalArgumentException();
+        if (debug) {
+            checkRep();
         }
-       for(int i = 0; i < getChannelSize() ; i++)
+
+        if (scalingFactor <= 0)
+        {
+            return;
+        }
+
+       for (int i = 0; i < getChannelSize() ; i++)
        {
            leftChannel[i] = leftChannel[i] * scalingFactor;
            rightChannel[i] = rightChannel[i] * scalingFactor;
        }
 
-       for(int j = 0 ; j < getChannelSize() ; j++)
-       {
-           if(leftChannel[j] > 1 || leftChannel[j] < -1)
-           {
-               normalizeWave(leftChannel);
-           }
-           if(rightChannel[j] > 1 || rightChannel[j] < -1)
-           {
-               normalizeWave(rightChannel);
+       normalizeWave(leftChannel);
+       normalizeWave(rightChannel);
 
-           }
+       if (debug) {
+           checkRep();
        }
-
     }
 
     @Override

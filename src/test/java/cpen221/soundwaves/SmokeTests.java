@@ -162,6 +162,28 @@ public class SmokeTests {
         assertArrayEquals(resultRight, result.getRightChannel(), 0.00001);
     }
 
+    @Test
+    public void testScale1() {
+        double[] left = {0.8, -0.6, 0.1, -0.5};
+        double[] right = {0.3, -0.3, 0.6, -0.4};
+        double[] leftAfter = {1, -0.75, 0.125, -0.625};
+        double[] rightAfter = {0.5, -0.5, 1.0, -0.6666666667};
+
+        SoundWave test1 = new ConcreteSoundWave(left, right);
+        test1.scale(2.0);
+
+        assertArrayEquals(leftAfter, test1.getLeftChannel(), 0.00001);
+        assertArrayEquals(rightAfter, test1.getRightChannel(), 0.00001);
+
+        test1.scale(0.5);
+
+        double[] leftAfter2 = {1.0 / 2.0, -0.75 / 2, 0.125 / 2, -0.625 / 2};
+        double[] rightAfter2 = {0.5 / 2, -0.5 / 2, 1.0 / 2, -0.6666666667 / 2};
+
+        assertArrayEquals(leftAfter2, test1.getLeftChannel(), 0.00001);
+        assertArrayEquals(rightAfter2, test1.getRightChannel(), 0.00001);
+    }
+
     /**
      * contains(SoundWave other)
      * Determine if this wave fully contains the other sound wave as a pattern.
