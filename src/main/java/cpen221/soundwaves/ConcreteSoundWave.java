@@ -264,41 +264,20 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public SoundWave addEcho(double delta, double alpha) {
-        // TODO: Implement this method
         double[] leftChannel = this.getLeftChannel();
         double[] rightChannel = this.getRightChannel();
 
 
-        double[] newLeftChannel = new double[leftChannel.length];
-        double[] newRightChannel = new double[rightChannel.length];
 
+        for (int i = (int) delta; i < leftChannel.length; i++) {
 
-        double maxAmplitude = 0;
-
-
-        for (int i = 0; i < leftChannel.length; i++) {
-            int echoIndex = i - (int) delta;
-
-            double echoLeft = (echoIndex >= 0) ? leftChannel[echoIndex] * alpha : 0;
-            double echoRight = (echoIndex >= 0) ? rightChannel[echoIndex] * alpha : 0;
-
-            newLeftChannel[i] = leftChannel[i] + echoLeft;
-            newRightChannel[i] = rightChannel[i] + echoRight;
-
-
-            maxAmplitude = Math.max(maxAmplitude, Math.abs(newLeftChannel[i]));
-            maxAmplitude = Math.max(maxAmplitude, Math.abs(newRightChannel[i]));
+            leftChannel[i] += alpha * leftChannel[i - (int) delta];
+            rightChannel[i] += alpha * rightChannel[i - (int) delta];
         }
+        normalizeWave(leftChannel);
+        normalizeWave(rightChannel);
 
-
-        if (maxAmplitude > 1.0) {
-            for (int i = 0; i < newLeftChannel.length; i++) {
-                newLeftChannel[i] /= maxAmplitude;
-                newRightChannel[i] /= maxAmplitude;
-            }
-        }
-
-        return new ConcreteSoundWave(newLeftChannel, newRightChannel);
+        return new ConcreteSoundWave(leftChannel, rightChannel);
     }
 
     @Override
