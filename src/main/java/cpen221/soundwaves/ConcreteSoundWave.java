@@ -313,6 +313,15 @@ public class ConcreteSoundWave implements SoundWave {
     @Override
     public boolean contains(SoundWave other) {
         // TODO: Implement this method
+        if(this.leftChannel.length!=other.getLeftChannel().length||this.rightChannel.length!=other.getRightChannel().length){
+            return false;
+        }
+        double scale = other.getLeftChannel()[0]/this.leftChannel[0];
+        for (int i = 1; i < this.leftChannel.length; i++) {
+            if(other.getLeftChannel()[i]/this.leftChannel[i]!=scale||other.getRightChannel()[i]/this.rightChannel[i]!=scale){
+                return false;
+            }
+        }
         return true; // change this
     }
 
