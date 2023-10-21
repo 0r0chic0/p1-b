@@ -37,19 +37,4 @@ public class SquareWave extends ConcreteSoundWave {
 
         return new SquareWave(channel);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ConcreteSoundWave)) {
-            return false;
-        }
-        ConcreteSoundWave wave = (ConcreteSoundWave) o;
-
-        return Arrays.equals(getRightChannel(), wave.getRightChannel()) && Arrays.equals(getLeftChannel(), wave.getLeftChannel());
-    }
-
-    @Override
-    public int hashCode() {
-        return getRightChannel().length + getLeftChannel().length;
-    }
 }

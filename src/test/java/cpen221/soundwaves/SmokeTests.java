@@ -298,6 +298,17 @@ public class SmokeTests {
         assertEquals(1.0, similarity, 0.01);
     }
 
+    @Test
+    public void testSimilarityWithOppositeWaves() {
+
+        ConcreteSoundWave wave1 = SinusoidalWave.getInstance(1.0, 0.0, 0.5, 5.0 / 44100);
+        ConcreteSoundWave wave2 = SinusoidalWave.getInstance(1.0, Math.PI, 0.5, 5.0 / 44100);
+
+        double similarity = wave1.similarity(wave2);
+
+        assertEquals(1.0, similarity, 0.01);
+    }
+
 
     /**
      * Generate a random signal of length 100.

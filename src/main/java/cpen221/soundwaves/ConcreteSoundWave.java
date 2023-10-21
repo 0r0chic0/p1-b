@@ -13,6 +13,8 @@ public class ConcreteSoundWave implements SoundWave {
     private double[] rightChannel;
     private static boolean debug = true;
 
+    public static final double INFINITESIMAL = 0.000000000001;
+
     // The abstraction function is
     //      AF(r) = sound wave w such that
     //          w.leftChannel = r.leftChannel
@@ -325,34 +327,88 @@ public class ConcreteSoundWave implements SoundWave {
         if (debug) {
             checkRep();
         }
-        double beta = 0;
-        other.scale(beta);
+
         List<Double> w1R = getRightChannelList();
         List<Double> w1L = getLeftChannelList();
         List<Double> w2R = other.getRightChannelList();
         List<Double> w2L = other.getLeftChannelList();
+        double scalingSumL1 = 0.0;
+        double scalingSumR1 = 0.0;
+        double scalingTermL1;
+        double scalingTermR1;
+        double scalingSumL2 = 0.0;
+        double scalingSumR2 = 0.0;
+        double scalingTermL2;
+        double scalingTermR2;
 
-        double gamma1 = gamma(w1R, w1L, w2R, w2L, other);
-        double gamma2 = gamma(w2R, w2L, w1R, w1L, other);
+        for (int i = 0; i < getChannelSize() || i < other.getChannelSize(); i++) {
+            extendWaveList(i, w1L, w1R);
+            extendWaveList(i, w2L, w1R);
 
-        return (gamma1 + gamma2) / 2;
+            if (w1L.get(i) == 0.0 || w2L.get(i) == 0.0) {
+                scalingTermL1 = 0.0;
+                scalingTermL2 = 0.0;
+            } else {
+                scalingTermL1 = w1L.get(i) / w2L.get(i);
+                scalingTermL2 = w2L.get(i) / w1L.get(i);
+            }
+
+            if (w1R.get(i) == 0.0 || w2R.get(i) == 0.0) {
+                scalingTermR1 = 0.0;
+                scalingTermR2 = 0.0;
+            } else {
+                scalingTermR1 = w1R.get(i) / w2R.get(i);
+                scalingTermR2 = w2R.get(i) / w1R.get(i) ;
+            }
+
+            scalingSumL1 += scalingTermL1;
+            scalingSumR1 += scalingTermR1;
+            scalingSumL2 += scalingTermL2;
+            scalingSumR2 += scalingTermR2;
+        }
+
+        double beta1 = 1.0;
+        double scalingSum1 = scalingSumR1 + scalingSumL1;
+        double beta2 = 1.0;
+        double scalingSum2 = scalingSumR2 + scalingSumL2;
+
+        if (scalingSum1 / (w1L.size() + w1R.size()) <= 0.0) {
+            beta1 = INFINITESIMAL;
+        } else {
+            beta1 = scalingSum1 / (w1L.size() + w1R.size());
+        }
+
+        if (scalingSum2 / (w2L.size() + w2R.size()) <= 0.0) {
+            beta2 = INFINITESIMAL;
+        } else {
+            beta2 = scalingSum2 / (w2L.size() + w2R.size());
+        }
+
+        other.scale(beta1);
+        double gamma1 = gamma(this, other);
+        this.scale(beta1);
+        other.scale(1 / beta2);
+        double gamma2 = gamma(other, this);
+        this.scale(1 / beta2);
+
+        return (gamma1 + gamma2) / 2.0;
     }
 
-    private double gamma(List<Double> w1R, List<Double> w1L, List<Double> w2R, List<Double> w2L, SoundWave other) {
+    private static double gamma(SoundWave wave1, SoundWave wave2) {
+        List<Double> w1R = wave1.getRightChannelList();
+        List<Double> w1L = wave1.getLeftChannelList();
+        List<Double> w2R = wave2.getRightChannelList();
+        List<Double> w2L = wave2.getLeftChannelList();
         double sum1 = 0;
         double sum2 = 0;
         for (int i = 0; i < w1L.size() || i < w2L.size(); i++) {
             extendWaveList(i, w1L, w1R);
             extendWaveList(i, w2L, w1R);
-            sum1 += Math.pow(w1R.get(i) - w2R.get(i),2);
-            sum2 += Math.pow(w1L.get(i) - w2L.get(i),2);
+            sum1 += Math.pow(w1R.get(i) - w2R.get(i), 2);
+            sum2 += Math.pow(w1L.get(i) - w2L.get(i), 2);
         }
 
-        if (isSingleChannel() && other.isSingleChannel()) {
-            return 1 / (1 + sum1);
-        }
-
-        return 1 / (1 + sum1 + sum2);
+        return 1.0 / (1.0 + sum1 + sum2);
     }
 
     /**
