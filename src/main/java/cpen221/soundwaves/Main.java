@@ -5,6 +5,7 @@ import cpen221.soundwaves.soundutils.Audio;
 import cpen221.soundwaves.soundutils.AudioFile;
 import cpen221.soundwaves.soundutils.SoundWaveChart;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,6 +40,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        SoundWave test1 = MP3Wave.getInstance("samples/force.mp3");
+        System.out.println(test1.getLeftChannel());
+
         double[] left = {1, 1, 1, 1};
         double[] right = {1, 1, 1, 1};
         double[] left2 = {-0.5, 1, 1, 1};
@@ -58,12 +62,10 @@ public class Main {
         SoundWave w4 = new ConcreteSoundWave(left2, right2);
         SoundWave w5 = new ConcreteSoundWave(left2, right2);
         SoundWave w6 = new ConcreteSoundWave(left2, right2);
-
-        System.out.print(w1.similarity(w2));
         examplePlayMP3file();
-        examplePlayWAVfile();
-        exampleSineWaveWithChart();
-        examplePlayAndDraw();
+        //examplePlayWAVfile();
+        //exampleSineWaveWithChart();
+        //examplePlayAndDraw();
     }
 
     private static void examplePlayMP3file() {

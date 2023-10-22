@@ -50,4 +50,30 @@ public class MP3Wave extends ConcreteSoundWave {
 
         return new MP3Wave(channel);
     }
+
+    /**
+     * Obtain a new {@code MP3Wave} instance.
+     *
+     * @param mp3File:  mp3 file to read from,
+     *                  requires mp3File to be of type mp3,
+     *                  and to be not null
+     * @return a {@code MP3Wave} instance from provided mp3 file
+     */
+    public static MP3Wave getInstance(AudioFile mp3File) {
+        List<Double> channelList = new ArrayList<>();
+
+        while (!mp3File.isEmpty()) {
+            double[] samples = mp3File.readNext();
+            for (double sample : samples) {
+                channelList.add(sample);
+            }
+        }
+
+        double[] channel = new double[channelList.size()];
+        for (int i = 0; i < channelList.size(); i++) {
+            channel[i] = channelList.get(i);
+        }
+
+        return new MP3Wave(channel);
+    }
 }
