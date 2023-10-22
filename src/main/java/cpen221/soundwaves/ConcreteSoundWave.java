@@ -11,7 +11,7 @@ import static cpen221.soundwaves.soundutils.FilterType.*;
 public class ConcreteSoundWave implements SoundWave {
     private double[] leftChannel;
     private double[] rightChannel;
-    private static boolean debug = true;
+    private static boolean debug;
     public static final double INFINITESIMAL = 0.000000000001;
 
     // The abstraction function is

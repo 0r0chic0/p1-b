@@ -5,7 +5,9 @@ import cpen221.soundwaves.soundutils.Audio;
 import cpen221.soundwaves.soundutils.AudioFile;
 import cpen221.soundwaves.soundutils.SoundWaveChart;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 
 import static cpen221.soundwaves.soundutils.FilterType.*;
@@ -24,16 +26,11 @@ import static cpen221.soundwaves.soundutils.FilterType.*;
  *     </ul>
  * </p>
  */
+
+
 public class Main {
 
     public static void main(String[] args) {
-        double freq = 6000;
-        double phase = 0.0;
-        double amplitude = 1.0;
-        double duration = 5.0 / 44100.0;
-        SoundWave sw1 = SquareWave.getInstance(freq, phase, amplitude, duration);
-        double[] left = {1, 1, 1, 1, -1};
-        double[] right = {1, 1, 1, 1, -1};
 
 //        examplePlayMP3file();
 //        examplePlayWAVfile();
