@@ -397,6 +397,11 @@ public class SmokeTests {
     }
 
     @Test
+    public void testSimilarSounds2() {
+
+    }
+
+    @Test
     public void testHighestAmplitudeFrequencyComponent() {
         SoundWave wave1 = SinusoidalWave.getInstance(400.0,0,0.50,100.0 / SoundWave.SAMPLES_PER_SECOND);
         assertEquals(441, wave1.highestAmplitudeFrequencyComponent(), 1);

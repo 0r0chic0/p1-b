@@ -390,7 +390,6 @@ public class ConcreteSoundWave implements SoundWave {
         if (debug) {
             checkRep();
         }
-
         List<Double> w1R = getRightChannelList();
         List<Double> w1L = getLeftChannelList();
         List<Double> w2R = other.getRightChannelList();
@@ -453,6 +452,10 @@ public class ConcreteSoundWave implements SoundWave {
         other.scale(1 / beta1);
         double gamma2 = gamma(other, this);
         this.scale(1 / beta2);
+
+        if (debug) {
+            checkRep();
+        }
 
         return (gamma1 + gamma2) / 2.0;
     }
