@@ -334,18 +334,48 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public boolean contains(SoundWave other) {
-        if (this.leftChannel.length != other.getLeftChannel().length
-                || this.rightChannel.length != other.getRightChannel().length) {
+        if(other.getLeftChannel().length>this.leftChannel.length){
             return false;
         }
-        double scale = other.getLeftChannel()[0] / this.leftChannel[0];
-        for (int i = 1; i < this.leftChannel.length; i++) {
-            if (other.getLeftChannel()[i] / this.leftChannel[i] != scale
-                    || other.getRightChannel()[i] / this.rightChannel[i] != scale) {
+        double scale = -1;
+        for (int i = 0; i < other.getLeftChannel().length; i++) {
+            if(this.leftChannel[i]==0){
+                if(this.rightChannel[i]==0){
+                    continue;
+                }else{
+                    scale = other.getRightChannel()[i]/this.rightChannel[i];
+                    break;
+                }
+            }else{
+                scale = other.getLeftChannel()[i]/this.leftChannel[i];
+                break;
+            }
+        }
+        if(scale==-1){
+            for (int i = 0; i < other.getLeftChannel().length; i++) {
+                if(other.getLeftChannel()[i]!=0){
+                    return false;
+                }
+            }
+            for (int i = 0; i < other.getRightChannel().length; i++) {
+                if(other.getRightChannel()[i]!=0){
+                    return false;
+                }
+            }
+            return true;
+        }
+        for (int i = 0; i < other.getLeftChannel().length; i++) {
+            if(this.leftChannel[i]==0||this.rightChannel[i]==0){
+                return false;
+            }
+            if(scale==0&&this.leftChannel[i]!=0||scale==0&&this.rightChannel[i]!=0){
+                return false;
+            }
+            if(other.getLeftChannel()[i]/this.leftChannel[i]!=scale||other.getRightChannel()[i]/this.rightChannel[i]!=scale){
                 return false;
             }
         }
-        return true;
+        return true; // change this
     }
 
     /**
