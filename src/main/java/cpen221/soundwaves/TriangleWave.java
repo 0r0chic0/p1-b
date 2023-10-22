@@ -25,23 +25,10 @@ public class TriangleWave extends ConcreteSoundWave {
         double[] channel = new double[samples];
         double angFreq = 2 * Math.PI * freq;
         double time = 0;
-        int exponent = 10;
-        double factor = (Math.pow(2, 3) / Math.pow(Math.PI, 2));
-        double N = Math.pow(2, exponent);
-
-
-        for (int i = 0; i < samples; i++) {
-            double sum = 0;
-            for (int j = 0; j < N - 1; j++) {
-                int n = (2 * j) + 1;
-                int constant = -1;
-                int constant2 = -2;
-                sum += Math.pow(constant, j) * Math.pow(n, constant2) * Math.sin((angFreq * (time + phase) * n));
-            }
-            time += SECONDS_PER_SAMPLE;
-            channel[i] = amplitude * factor * sum;
+        for (int i = 0; i < samples; time += SECONDS_PER_SAMPLE, i++)
+        {
+            channel[i] = (2 *amplitude/Math.PI) * Math.asin(Math.sin(angFreq * time + (phase * angFreq)));
         }
-
         return new TriangleWave(channel);
     }
 }
