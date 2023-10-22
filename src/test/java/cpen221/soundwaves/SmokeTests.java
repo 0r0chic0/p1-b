@@ -56,12 +56,25 @@ public class SmokeTests {
         assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
     }
 
+    @Test
+    public void testCreateSineWave2() {
+        double freq = 6000.0;
+        double phase = 3.4;
+        double amplitude = 1.0;
+        double duration = 5.0 / 44100.0;
+        SoundWave sw1 = SinusoidalWave.getInstance(freq, phase, amplitude, duration);
+        double[] left = {- 1.4205192796 * Math.pow(10,-11), 0.754475850908, 0.990366961496, 0.545534901223, -0.274267510656};
+        double[] right = {- 1.4205192796 * Math.pow(10,-11), 0.754475850908, 0.990366961496, 0.545534901223, -0.274267510656};
+        assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
+        assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
+    }
+
     /**
      * Test for SquareWave: assumes that the value at jump time is +amplitude
      * Example: wave at time 0 with no phase change and amplitude 1 is 1
      */
     @Test
-    public void testCreateSquareWave() {
+    public void testCreateSquareWave1() {
         double freq = 6000;
         double phase = 0.0;
         double amplitude = 1.0;
@@ -69,6 +82,20 @@ public class SmokeTests {
         SoundWave sw1 = SquareWave.getInstance(freq, phase, amplitude, duration);
         double[] left = {1, 1, 1, 1, -1};
         double[] right = {1, 1, 1, 1, -1};
+
+        assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
+        assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
+    }
+
+    @Test
+    public void testCreateSquareWave2() {
+        double freq = 6000;
+        double phase = 3.4;
+        double amplitude = 1.0;
+        double duration = 5.0 / 44100.0;
+        SoundWave sw1 = SquareWave.getInstance(freq, phase, amplitude, duration);
+        double[] left = {-1, 1, 1, 1, -1};
+        double[] right = {-1, 1, 1, 1, -1};
 
         assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
         assertArrayEquals(right, sw1.getRightChannel(), 0.00001);

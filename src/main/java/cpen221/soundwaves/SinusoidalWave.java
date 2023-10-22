@@ -27,7 +27,7 @@ public class SinusoidalWave extends ConcreteSoundWave {
         double time = 0;
 
         for (int i = 0; i < samples; time += SECONDS_PER_SAMPLE, i++) {
-            channel[i] = amplitude * Math.sin(angFreq * time + phase);
+            channel[i] = amplitude * Math.sin(angFreq * time + (phase * angFreq));
         }
 
         return new SinusoidalWave(channel);
