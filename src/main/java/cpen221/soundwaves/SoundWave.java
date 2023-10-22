@@ -5,7 +5,6 @@ import cpen221.soundwaves.soundutils.FilterType;
 import java.util.List;
 
 public interface SoundWave {
-
     public static final int SAMPLES_PER_SECOND = 44100;
     public static final double SECONDS_PER_SAMPLE = 1.0 / SAMPLES_PER_SECOND;
     public static final double NYQUIST_LIMIT = SAMPLES_PER_SECOND / 2.0;
@@ -29,7 +28,8 @@ public interface SoundWave {
     public double[] getRightChannel();
 
     /**
-     * Obtain the duration of this sound wave
+     * Obtain the duration of this sound wave.
+     * Assumes sample rate is 44,100 samples/sec.
      *
      * @return the duration of this sound wave, in seconds
      */
@@ -54,7 +54,9 @@ public interface SoundWave {
 
     /**
      * Create a new wave by adding another wave to this wave.
-     * (You should also write clear specifications for this method.)
+     *
+     * @param other the wave to add
+     * @return the new superimposed sound wave
      */
     public SoundWave add(SoundWave other);
 
@@ -124,11 +126,23 @@ public interface SoundWave {
     /**
      * Gets number of samples in a SoundWave.
      *
-     * @return the length of right and left channel of SoundWAve
+     * @return the length of right and left channel of {@code SoundWave}
      */
     public int getChannelSize();
 
+    /**
+     * Gets the right channel of a sound wave as a list.
+     * Changes to the list will not mutate the {@code SoundWave}
+     *
+     * @return the list that represents the right channel of the sound wave
+     */
     public List<Double> getRightChannelList();
 
+    /**
+     * Gets the left channel of a sound wave as a list.
+     * Changes to the list will not mutate the {@code SoundWave}.
+     *
+     * @return the list that represents the left channel of the sound wave
+     */
     public List<Double> getLeftChannelList();
 }
