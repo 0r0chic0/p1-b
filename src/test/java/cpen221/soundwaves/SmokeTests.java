@@ -290,6 +290,7 @@ public class SmokeTests {
 
     @Test
     public void testContains7() {
+        // A wave with all elements 0 cannot be scaled to a wave with non 0 elements
         double[] left = {0.5, 0.5, 0.5};
         double[] right = {0.5, 0.5, 0.5};
         double[] otherLeft = {0, 0, 0};
@@ -302,6 +303,7 @@ public class SmokeTests {
 
     @Test
     public void testContains8() {
+        // Scaling factor must be > 0
         double[] left = {0, 0, 0};
         double[] right = {0, 0, 0};
         double[] otherLeft = {0.5, 0.5, 0.5};
