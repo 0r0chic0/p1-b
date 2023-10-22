@@ -1,10 +1,5 @@
 package cpen221.soundwaves;
 
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class SinusoidalWave extends ConcreteSoundWave {
     /**
      * A private constructor

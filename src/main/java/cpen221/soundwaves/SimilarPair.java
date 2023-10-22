@@ -4,9 +4,9 @@ package cpen221.soundwaves;
  *  SimilarPair represents an immutable pair of SoundWaves
  */
 public class SimilarPair {
-    public final double similarity;
-    public final SoundWave wave1;
-    public final SoundWave wave2;
+    private final double similarity;
+    private final SoundWave wave1;
+    private final SoundWave wave2;
 
     // The abstraction function is
     //      AF(r) = SoundWave pair p such that
@@ -29,5 +29,17 @@ public class SimilarPair {
         this.wave1 = new ConcreteSoundWave(wave1.getLeftChannel(), wave1.getRightChannel());
         this.wave2 = new ConcreteSoundWave(wave2.getLeftChannel(), wave2.getRightChannel());
         similarity = wave1.similarity(wave2);
+    }
+
+    public double getSimilarity() {
+        return similarity;
+    }
+
+    public SoundWave getWave1() {
+        return new ConcreteSoundWave(wave1.getLeftChannel(), wave1.getRightChannel());
+    }
+
+    public SoundWave getWave2() {
+        return new ConcreteSoundWave(wave2.getLeftChannel(), wave2.getRightChannel());
     }
 }
