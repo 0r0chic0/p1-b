@@ -1,3 +1,5 @@
 - Wrote getInstance for SquareWave
 - wrote Appending Waves
 - wrote addEcho method
+- help to write similarity test case
+- wrote contain method
