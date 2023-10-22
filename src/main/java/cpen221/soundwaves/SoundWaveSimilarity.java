@@ -10,12 +10,15 @@ public class SoundWaveSimilarity {
      * Gets the group of {@code SoundWave}s that are more similar to the {@code baselineWave} than
      * other {@code SoundWave}s in {@code audioDataset} partitioned into {@code numGroups} groups.
      *
-     * @param audioDataset: group of sound waves to partition
-     * @param numGroups: number of partitioned groups
-     *                   requires 1 <= numGroups <= {@code audioDataset.size()}
+     * @param audioDataset: group of sound waves to partition,
+     *                      requires that audioDataset is not null
+     * @param numGroups:    number of partitioned groups
+     *                      requires 1 <= numGroups <= {@code audioDataset.size()}
+     *                      and numGroups is not null
      * @param baselineWave: soundWave that will be in returned group
      *                      requires that baselineWave is in audioDataset
-     * @return the group of {@code SoundWave}s that are more similar to baseLineWave
+     *                      and baselineWave is not null
+     * @return              the group of {@code SoundWave}s that are more similar to baseLineWave
      */
     public Set<SoundWave> getSimilarSounds(Set<SoundWave> audioDataset,
                                            int numGroups,

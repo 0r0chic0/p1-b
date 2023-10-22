@@ -218,11 +218,71 @@ public class SmokeTests {
      * Wave 2 occurs in wave 1 with amplitude scaling of 2.
      */
     @Test
-    public void testContains() {
+    public void testContains1() {
         double[] left = {0.5, 0.5, 0.5};
         double[] right = {0.5, 0.5, 0.5};
         double[] otherLeft = {0.25, 0.25, 0.25};
         double[] otherRight = {0.25, 0.25, 0.25};
+        SoundWave wave1 = new ConcreteSoundWave(left, right);
+        SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
+        assertTrue(wave1.contains(wave2));
+    }
+
+    @Test
+    public void testContains2() {
+        double[] left = {0.5, 0.5, 0.5};
+        double[] right = {0.5, 0.5, 0.5};
+        double[] otherLeft = {-0.25, -0.25, -0.25};
+        double[] otherRight = {0.25, 0.25, 0.25};
+
+        SoundWave wave1 = new ConcreteSoundWave(left, right);
+        SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
+        assertFalse(wave1.contains(wave2));
+    }
+
+    @Test
+    public void testContains3() {
+        double[] left = {0.5, 0.5, 0.5};
+        double[] right = {0, 0.5, 0.5};
+        double[] otherLeft = {0.25, 0.25, 0.25};
+        double[] otherRight = {0.25, 0.25, 0.25};
+
+        SoundWave wave1 = new ConcreteSoundWave(left, right);
+        SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
+        assertFalse(wave1.contains(wave2));
+    }
+
+    @Test
+    public void testContains4() {
+        double[] left = {0.5, 0.5, 0.5};
+        double[] right = {0.5, 0.5, 0.5};
+        double[] otherLeft = {0.5, 0.25, 0.25};
+        double[] otherRight = {0.5, 0.25, 0.25};
+
+        SoundWave wave1 = new ConcreteSoundWave(left, right);
+        SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
+        assertFalse(wave1.contains(wave2));
+    }
+
+    @Test
+    public void testContains5() {
+        double[] left = {0.5, 0.5, 0.5};
+        double[] right = {0.5, 0.5, 0.5};
+        double[] otherLeft = {0.25, 0.25};
+        double[] otherRight = {0.25, 0.25};
+
+        SoundWave wave1 = new ConcreteSoundWave(left, right);
+        SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
+        assertTrue(wave1.contains(wave2));
+    }
+
+    @Test
+    public void testContains6() {
+        double[] left = {0.5, -0.5, 0.5};
+        double[] right = {0.5, -0.5, 0.5};
+        double[] otherLeft = {0.25, -0.25, 0.25};
+        double[] otherRight = {0.25, -0.25, 0.25};
+
         SoundWave wave1 = new ConcreteSoundWave(left, right);
         SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
         assertTrue(wave1.contains(wave2));
@@ -273,6 +333,19 @@ public class SmokeTests {
         SoundWave wave2 = SinusoidalWave.getInstance(2205,0,0.30,100.0 / SoundWave.SAMPLES_PER_SECOND);
         assertEquals(2205, wave2.highestAmplitudeFrequencyComponent(), 1);
         SoundWave wave3 = SinusoidalWave.getInstance(980, 0, 0.40, 100.0 / SoundWave.SAMPLES_PER_SECOND);
+        SoundWave wave4 = wave3.add(wave2);
+        assertEquals(882, wave4.highestAmplitudeFrequencyComponent(), 1);
+        SoundWave wave5 = wave4.add(wave1);
+        assertEquals(441.0, wave5.highestAmplitudeFrequencyComponent());
+    }
+
+    @Test
+    public void testHighestAmplitudeFrequencyComponentWithPhase() {
+        SoundWave wave1 = SinusoidalWave.getInstance(400.0,3.2,0.50,100.0 / SoundWave.SAMPLES_PER_SECOND);
+        assertEquals(441, wave1.highestAmplitudeFrequencyComponent(), 1);
+        SoundWave wave2 = SinusoidalWave.getInstance(2205,3.6,0.30,100.0 / SoundWave.SAMPLES_PER_SECOND);
+        assertEquals(2205, wave2.highestAmplitudeFrequencyComponent(), 1);
+        SoundWave wave3 = SinusoidalWave.getInstance(980, 5, 0.40, 100.0 / SoundWave.SAMPLES_PER_SECOND);
         SoundWave wave4 = wave3.add(wave2);
         assertEquals(882, wave4.highestAmplitudeFrequencyComponent(), 1);
         SoundWave wave5 = wave4.add(wave1);
