@@ -102,7 +102,7 @@ public class SmokeTests {
      * Test for triangle wave
      */
     @Test
-    public void testCreateTriangleWave() {
+    public void testCreateTriangleWave1() {
         double freq = 1;
         double phase = 0.0;
         double amplitude = 1.0;
@@ -110,6 +110,20 @@ public class SmokeTests {
         SoundWave sw1 = TriangleWave.getInstance(freq, phase, amplitude, duration);
         double[] left = {0, 0.0000907, 0.0001814, 0.0002721, 0.0003628};
         double[] right = {0, 0.0000907, 0.0001814, 0.0002721, 0.0003628};
+
+        assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
+        assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
+    }
+
+    @Test
+    public void testCreateTriangleWave2() {
+        double freq = 441;
+        double phase = 3.8;
+        double amplitude = 0.6;
+        double duration = 5.0 / 44100.0;
+        SoundWave sw1 = TriangleWave.getInstance(freq, phase, amplitude, duration);
+        double[] left = {-0.480000000001, -0.456, -0.432000000001, -0.408, -0.384000000001};
+        double[] right = {-0.480000000001, -0.456, -0.432000000001, -0.408, -0.384000000001};
 
         assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
         assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
@@ -404,7 +418,6 @@ public class SmokeTests {
 
     @Test
     public void testSimilarityWithIdenticalWaves() {
-
         double[] leftChannel = {0.1, 0.2, 0.3};
         double[] rightChannel = {0.1, 0.2, 0.3};
 
@@ -414,9 +427,7 @@ public class SmokeTests {
         wave1.scale(0.99);
         wave2.scale(0.99);
 
-
         double similarity = wave1.similarity(wave2);
-
 
         assertEquals(1.0, similarity, 0.01);
     }

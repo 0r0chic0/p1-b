@@ -334,44 +334,45 @@ public class ConcreteSoundWave implements SoundWave {
      */
     @Override
     public boolean contains(SoundWave other) {
-        if(other.getLeftChannel().length>this.leftChannel.length){
+        if (other.getLeftChannel().length > this.leftChannel.length) {
             return false;
         }
         double scale = -1;
         for (int i = 0; i < other.getLeftChannel().length; i++) {
-            if(this.leftChannel[i]==0){
-                if(this.rightChannel[i]==0){
+            if (this.leftChannel[i] == 0) {
+                if (this.rightChannel[i] == 0) {
                     continue;
-                }else{
-                    scale = other.getRightChannel()[i]/this.rightChannel[i];
+                } else {
+                    scale = other.getRightChannel()[i] / this.rightChannel[i];
                     break;
                 }
-            }else{
-                scale = other.getLeftChannel()[i]/this.leftChannel[i];
+            } else {
+                scale = other.getLeftChannel()[i] / this.leftChannel[i];
                 break;
             }
         }
-        if(scale==-1){
+        if (scale == -1) {
             for (int i = 0; i < other.getLeftChannel().length; i++) {
-                if(other.getLeftChannel()[i]!=0){
+                if (other.getLeftChannel()[i] != 0) {
                     return false;
                 }
             }
             for (int i = 0; i < other.getRightChannel().length; i++) {
-                if(other.getRightChannel()[i]!=0){
+                if (other.getRightChannel()[i] != 0) {
                     return false;
                 }
             }
             return true;
         }
         for (int i = 0; i < other.getLeftChannel().length; i++) {
-            if(this.leftChannel[i]==0||this.rightChannel[i]==0){
+            if (this.leftChannel[i] == 0 || this.rightChannel[i] == 0) {
                 return false;
             }
-            if(scale==0&&this.leftChannel[i]!=0||scale==0&&this.rightChannel[i]!=0){
+            if (scale == 0 && this.leftChannel[i] != 0 || scale == 0 && this.rightChannel[i] != 0) {
                 return false;
             }
-            if(other.getLeftChannel()[i]/this.leftChannel[i]!=scale||other.getRightChannel()[i]/this.rightChannel[i]!=scale){
+            if (other.getLeftChannel()[i] / this.leftChannel[i] != scale
+                    || other.getRightChannel()[i] / this.rightChannel[i] != scale) {
                 return false;
             }
         }

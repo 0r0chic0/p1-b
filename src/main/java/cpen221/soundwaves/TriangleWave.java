@@ -37,7 +37,6 @@ public class TriangleWave extends ConcreteSoundWave {
             channel[i] = amplitude * (8 / Math.pow(Math.PI, 2)) * sum;
         }
 
-
         return new TriangleWave(channel);
     }
 }
