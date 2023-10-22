@@ -243,7 +243,7 @@ public class SmokeTests {
     @Test
     public void testContains3() {
         double[] left = {0.5, 0.5, 0.5};
-        double[] right = {0, 0.5, 0.5};
+        double[] right = {0.25, 0.5, 0.5};
         double[] otherLeft = {0.25, 0.25, 0.25};
         double[] otherRight = {0.25, 0.25, 0.25};
 
@@ -286,6 +286,30 @@ public class SmokeTests {
         SoundWave wave1 = new ConcreteSoundWave(left, right);
         SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
         assertTrue(wave1.contains(wave2));
+    }
+
+    @Test
+    public void testContains7() {
+        double[] left = {0.5, 0.5, 0.5};
+        double[] right = {0.5, 0.5, 0.5};
+        double[] otherLeft = {0, 0, 0};
+        double[] otherRight = {0, 0, 0};
+
+        SoundWave wave1 = new ConcreteSoundWave(left, right);
+        SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
+        assertFalse(wave1.contains(wave2));
+    }
+
+    @Test
+    public void testContains8() {
+        double[] left = {0, 0, 0};
+        double[] right = {0, 0, 0};
+        double[] otherLeft = {0.5, 0.5, 0.5};
+        double[] otherRight = {0.5, 0.5, 0.5};
+
+        SoundWave wave1 = new ConcreteSoundWave(left, right);
+        SoundWave wave2 = new ConcreteSoundWave(otherLeft, otherRight);
+        assertFalse(wave1.contains(wave2));
     }
 
     /**
