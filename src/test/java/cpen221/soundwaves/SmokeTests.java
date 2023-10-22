@@ -54,6 +54,15 @@ public class SmokeTests {
     }
 
     @Test
+    public void testCreateSineWaveLarge() {
+        double freq = 441.0;
+        double phase = 0.0;
+        double amplitude = 1.0;
+        double duration = 1;
+        SoundWave sw1 = SinusoidalWave.getInstance(freq, phase, amplitude, duration);
+    }
+
+    @Test
     public void testCreateSineWave2() {
         double freq = 6000.0;
         double phase = 3.4;
@@ -141,6 +150,15 @@ public class SmokeTests {
 
         assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
         assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
+    }
+
+    @Test
+    public void testCreateTriangleWaveLarge() {
+        double freq = 441;
+        double phase = 0;
+        double amplitude = 0.6;
+        double duration = 44100.0 / 44100.0;
+        SoundWave sw1 = TriangleWave.getInstance(freq, phase, amplitude, duration);
     }
 
 
