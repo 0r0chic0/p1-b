@@ -11,3 +11,4 @@
 - Wrote tests for scale
 - Wrote tests for addEcho
 - Wrote similarPair class
+- Wrote test for contains

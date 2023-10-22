@@ -399,9 +399,9 @@ public class ConcreteSoundWave implements SoundWave {
             scalingSumR2 += scalingTermR2;
         }
 
-        double beta1 = 1.0;
+        double beta1;
         double scalingSum1 = scalingSumR1 + scalingSumL1;
-        double beta2 = 1.0;
+        double beta2;
         double scalingSum2 = scalingSumR2 + scalingSumL2;
 
         if (scalingSum1 / (w1L.size() + w1R.size()) <= 0.0) {

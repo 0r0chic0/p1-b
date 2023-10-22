@@ -26,7 +26,7 @@ public class SquareWave extends ConcreteSoundWave {
         double time = 0;
 
         for (int i = 0; i < samples; time += SECONDS_PER_SAMPLE, i++) {
-            channel[i] = amplitude * (Math.sin(angFreq * time + (phase * angFreq))>=0?1:-1);
+            channel[i] = amplitude * (Math.sin(angFreq * time + (phase * angFreq)) >= 0 ? 1 : -1);
         }
 
 

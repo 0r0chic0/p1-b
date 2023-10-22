@@ -4,10 +4,7 @@ package cpen221.soundwaves;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
 import static cpen221.soundwaves.soundutils.FilterType.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -333,7 +330,7 @@ public class SmokeTests {
     }
 
     @Test
-    public void testSimilarSounds() {
+    public void testSimilarSounds1() {
         var sounds = new ArrayList<SoundWave>();
         for (var i = 0; i < 5; i++) {
             var l = randomSignal();
