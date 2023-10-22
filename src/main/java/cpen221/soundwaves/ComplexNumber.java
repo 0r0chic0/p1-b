@@ -1,7 +1,5 @@
 package cpen221.soundwaves;
 
-import java.util.Arrays;
-
 /**
  *  ComplexNumber represents a mutable complex number.
  */
@@ -19,10 +17,12 @@ public class ComplexNumber {
     //      imaginary is not null
 
     /**
-     * Constructs a complex number
+     * Constructs an instance of a complex number.
      *
-     * @param real: the real value of the complex number
-     * @param imaginary: the imaginary value of the complex number
+     * @param real:         the real value of the complex number,
+     *                      requires real is not null
+     * @param imaginary:    the imaginary value of the complex number,
+     *                      requires imaginary is not null
      */
     public ComplexNumber(double real, double imaginary) {
         this.real = real;
@@ -50,8 +50,10 @@ public class ComplexNumber {
     /**
      * Computes addition of a complex number onto the complex number.
      *
-     * @param real: real part of complex number to add
-     * @param imaginary: imaginary part of complex number to add
+     * @param real:         real part of complex number to add,
+     *                      requires real is not null
+     * @param imaginary:    imaginary part of complex number to add,
+     *                      requires imaginary is not null
      */
     public void add(double real, double imaginary) {
         this.real = real + getReal();
@@ -71,8 +73,9 @@ public class ComplexNumber {
     /**
      * Computes the modulus of the complex number.
      *
-     * @param number complex number to compute modulus of
-     * @return the modulus of the complex number
+     * @param number:   complex number to compute modulus of,
+     *                  requires that number is not null
+     * @return          the modulus of the complex number
      */
     public static double mod(ComplexNumber number) {
         return Math.sqrt(Math.pow(number.getReal(), 2) + Math.pow(number.getImaginary(), 2));
@@ -81,8 +84,9 @@ public class ComplexNumber {
     /**
      * Computes the multiplication of two complex numbers in the form a + bi where a != 0, b != 0.
      *
-     * @param cd: complex number to multiply with
-     * @return product of the two complex numbers
+     * @param cd:   complex number to multiply with,
+     *              requires that cd is not null
+     * @return      a new {@code ComplexNumber} that is the product of the two complex numbers
      */
     public ComplexNumber multiply(ComplexNumber cd) {
         double a = getReal();
@@ -96,6 +100,13 @@ public class ComplexNumber {
         return new ComplexNumber(real, imaginary);
     }
 
+    /**
+     * Computes the multiplication of the complex number by a real number.
+     *
+     * @param real:     real number to multiply by,
+     *                  requires that real is not null
+     * @return          a new {@code ComplexNumber} that is the product of the complex number and the real number
+     */
     public ComplexNumber multiplyReal(double real) {
         return new ComplexNumber(real * getReal(), real * getImaginary());
     }

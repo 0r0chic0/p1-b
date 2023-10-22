@@ -12,7 +12,6 @@ public class ConcreteSoundWave implements SoundWave {
     private double[] leftChannel;
     private double[] rightChannel;
     private static boolean debug = true;
-
     public static final double INFINITESIMAL = 0.000000000001;
 
     // The abstraction function is
@@ -33,10 +32,10 @@ public class ConcreteSoundWave implements SoundWave {
      * Create an instance of {@code SoundWave} with specified amplitude values for
      * the left and right channel (assuming stereo).
      *
-     * @param leftChannel:  array of wave samples for left channel
+     * @param leftChannel:  array of wave samples for left channel,
      *                      requires that leftChannel only contains values in [-1, +1]
      *                      and leftChannel is same length as RightChannel
-     * @param rightChannel: array of wave samples for right channel
+     * @param rightChannel: array of wave samples for right channel,
      *                      requires that rightChannel only contains values in [-1, +1]
      *                      and rightChannel is same length as leftChannel
      */
@@ -73,8 +72,9 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Gets duration of sound wave
-     * @return duration of sound wave in seconds assuming sampling rate is 44,100 samples per second
+     * Gets duration of sound wave in seconds.
+     *
+     * @return duration of sound wave in seconds where sampling rate is 44,100 samples per second
      */
     @Override
     public double duration() {
@@ -87,10 +87,12 @@ public class ConcreteSoundWave implements SoundWave {
     /**
      * Appends wave samples to left and right channels of the sound wave.
      *
-     * @param lchannel: samples to append to left channel
-     *                  requires that lchannel is equal in length to rchannel
-     * @param rchannel: samples to append to right channel
-     *                  requires that rchannel is equal in length to lchannel
+     * @param lchannel: samples to append to left channel,
+     *                  requires that lchannel is equal in length to rchannel,
+     *                  requires that lchannel is not null
+     * @param rchannel: samples to append to right channel,
+     *                  requires that rchannel is equal in length to lchannel,
+     *                  requires that rchannel is not null
      */
     @Override
     public void append(double[] lchannel, double[] rchannel) {
@@ -115,7 +117,8 @@ public class ConcreteSoundWave implements SoundWave {
     /**
      * Appends a sound wave other onto the sound wave.
      *
-     * @param other: sound wave to append on
+     * @param other:    sound wave to append on,
+     *                  requires other to not be null
      */
     @Override
     public void append(SoundWave other) {
@@ -170,11 +173,14 @@ public class ConcreteSoundWave implements SoundWave {
     /**
      * Extends wave list by adding a 0.0 element to list if index i is greater than channel size.
      *
-     * @param i: index to check
-     * @param waveL: left channel of wave
-     * @param waveR: right channel of wave
+     * @param i:        index to check,
+     *                  requires that i is not null
+     * @param waveL:    left channel of wave,
+     *                  requires that waveL is not null
+     * @param waveR:    right channel of wave,
+     *                  requires that waveR is not null
      */
-    public static void extendWaveList(int i, List<Double> waveL, List<Double> waveR) {
+    private static void extendWaveList(int i, List<Double> waveL, List<Double> waveR) {
         if (i >= waveR.size()) {
             waveL.add(0.0);
             waveR.add(0.0);
@@ -182,7 +188,8 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Gets right channel of ConcreteSoundWave as a list.
+     * Gets right channel of {@code ConcreteSoundWave} as a list.
+     *
      *
      * @return right channel as list
      */
@@ -202,7 +209,7 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Gets left channel of ConcreteSoundWave as a list.
+     * Gets left channel of {@code ConcreteSoundWave} as a list.
      *
      * @return left channel as list
      */
@@ -223,10 +230,10 @@ public class ConcreteSoundWave implements SoundWave {
 
 
     /**
-     * Checks if a sample is too high or low in amplitude and then normalizes it to be in [-1,1]
+     * Checks if a sample is > 1 or < -1 and then normalizes it to be in [-1,1].
      *
-     * @param channel: wave channel to normalize
-     * @author dzhen2023
+     * @param channel:  wave channel to normalize,
+     *                  requires channel to be not null
      */
     private static void normalizeWave(double[] channel) {
         double loudest = 1.0;
@@ -244,8 +251,8 @@ public class ConcreteSoundWave implements SoundWave {
 
     /**
      * Gets size of channels in SoundWave.
+     *
      * @return length of right and left channels of SoundWave
-     * @author dzhen2023
      */
     @Override
     public int getChannelSize() {
@@ -253,11 +260,14 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
+     * Adds an echo to the sound wave.
      *
      * @param delta > 0. delta, in seconds, is the time lag between this wave and
      *              the echo wave.
-     *              requires that delta is a multiple of 1 / 44100
+     *              requires that delta is a multiple of 1 / 44100,
+     *              requires that delta is not null
      * @param alpha > 0. alpha is the damping factor applied to the echo wave.
+     *              requires that alpha is not null
      *
      * @return the ConcreteSoundWave with added echo
      */
@@ -291,6 +301,7 @@ public class ConcreteSoundWave implements SoundWave {
      * Scales the {@code SoundWave} by a scalingFactor
      *
      * @param scalingFactor is a value > 0.
+     *                      requires that scalingFactor is not null
      */
     @Override
     public void scale(double scalingFactor) {
@@ -319,7 +330,7 @@ public class ConcreteSoundWave implements SoundWave {
      * Determines if {@code SoundWave} other occurs in this {@code SoundWave}
      *
      * @param other is the wave to search for in this wave.
-     * @return true if other is in this {@code SoundWave}
+     * @return      true if other is in this {@code SoundWave}
      */
     @Override
     public boolean contains(SoundWave other) {
@@ -338,10 +349,10 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Calculates the similarity of the ConcreteSoundWave to wave other
+     * Calculates the similarity of the sound wave to sound wave other
      *
      * @param other is not null.
-     * @return return the similarity of the wave and other
+     * @return return the similarity of the sound wave and other
      */
     @Override
     public double similarity(SoundWave other) {
@@ -420,8 +431,10 @@ public class ConcreteSoundWave implements SoundWave {
      * g(wave1, wave2) = 1 / (1 + sum_{j=1}^{2} sum_t (w_{1,j}(t) - Bw_{2,j}(t))^2,
      * where B is scaling factor > 0, w_1 = wave1, w_2 = wave2, j = channel.
      *
-     * @param wave1: first {@code SoundWave}
-     * @param wave2: second {@code SoundWave}
+     * @param wave1:    first {@code SoundWave},
+     *                  requires that wave1 is not null
+     * @param wave2:    second {@code SoundWave},
+     *                  requires that wave2 is not null
      * @return the gamma value g(wave1, wave2)
      */
     private static double gamma(SoundWave wave1, SoundWave wave2) {
@@ -514,11 +527,13 @@ public class ConcreteSoundWave implements SoundWave {
      * BANDPASS: filters all frequencies not in between the two specifies frequencies
      * LOWPASS: filters all frequencies > minimum provided frequency
      *
-     * @param type: type of filter to apply
-     *              requires that type is valid (HIGHPASS, BANDPASS, LOWPASS)
-     * @param frequencies: frequencies to use for filtering
-     * @return  the filtered {@code SoundWave} if valid filter type,
-     *          else returns unchanged {@code SoundWave}
+     * @param type:         type of filter to apply
+     *                      requires that type is valid (HIGHPASS, BANDPASS, LOWPASS)
+     * @param frequencies:  frequencies to use for filtering,
+     *                      requires that frequencies are not null
+     * @return              the filtered {@code SoundWave} if valid filter type
+     *                      and <= 2 frequencies are provided,
+     *                      else returns unchanged {@code SoundWave}
      */
     @Override
     public SoundWave filter(FilterType type, Double... frequencies) {
