@@ -129,6 +129,21 @@ public class SmokeTests {
         assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
     }
 
+    @Test
+    public void testCreateTriangleWave3() {
+        double freq = 18000;
+        double phase = 3.8;
+        double amplitude = 0.6;
+        double duration = 5.0 / 44100.0;
+        SoundWave sw1 = TriangleWave.getInstance(freq, phase, amplitude, duration);
+        double[] left = {5.0215816847* Math.pow(10,-12), 0.220408163261, -0.440816326526, 0.538775510208, -0.318367346943};
+        double[] right = {5.0215816847* Math.pow(10,-12), 0.220408163261, -0.440816326526, 0.538775510208, -0.318367346943};
+
+        assertArrayEquals(left, sw1.getLeftChannel(), 0.00001);
+        assertArrayEquals(right, sw1.getRightChannel(), 0.00001);
+    }
+
+
     /**
      * append(double[] leftChannel, double[] rightChannel)
      * Test when both leftChannel and rightChannel are not empty. The wave is not empty too.
