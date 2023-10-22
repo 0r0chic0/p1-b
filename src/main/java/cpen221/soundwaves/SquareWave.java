@@ -23,14 +23,16 @@ public class SquareWave extends ConcreteSoundWave {
     public static SquareWave getInstance(double freq, double phase, double amplitude, double duration) {
         int samples = (int) (duration * SAMPLES_PER_SECOND);
         double[] channel = new double[samples];
-        double angFreq = 2 * Math.PI * freq;
-        double phaseShift = angFreq * phase;
-        double angularIncrement = angFreq * SECONDS_PER_SAMPLE;
+        double period = 1.0 / freq;
+        double halfPeriod = period / 2.0;
 
         for (int i = 0; i < samples; i++) {
-            double time = i * SECONDS_PER_SAMPLE;
-            double value = Math.sin(angularIncrement * time + phaseShift);
-            channel[i] = amplitude * (value == 0.0 ? 1.0 : (value > 0.0 ? 1.0 : -1.0));
+            double time = i * SECONDS_PER_SAMPLE + phase;
+            if (time % period < halfPeriod) {
+                channel[i] = amplitude;
+            } else {
+                channel[i] = -amplitude;
+            }
         }
 
         return new SquareWave(channel);
