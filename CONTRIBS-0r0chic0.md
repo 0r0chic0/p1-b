@@ -1,1 +1,3 @@
-
+-Wrote getInstance for TriangleWave 
+-Wrote Scale method
+-Wrote the implementation for Task 5 
