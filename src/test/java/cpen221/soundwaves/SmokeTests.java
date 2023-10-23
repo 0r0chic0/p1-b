@@ -490,7 +490,7 @@ public class SmokeTests {
 
         double similarity = wave1.similarity(wave2);
 
-        assertEquals(0.7153, similarity, 0.1);
+        assertEquals(0.7153, similarity, 0.01);
     }
 
     /**
@@ -562,6 +562,39 @@ public class SmokeTests {
     }
 
     @Test
+    public void testSimilarSoundsSpecific() {
+        var sounds = new ArrayList<SoundWave>();
+        int originalWaves = 4;
+        int totalWaves = 6;
+        int numGroups = 2;
+
+
+        for (var i = 0; i < originalWaves; i++) {
+            var l = randomSignal();
+            var r = randomSignal();
+            sounds.add(new ConcreteSoundWave(l, r));
+        }
+
+
+        for (var i = originalWaves; i < totalWaves; i++) {
+            var l = randomNoise(sounds.get(i - originalWaves).getLeftChannel());
+            var r = randomNoise(sounds.get(i - originalWaves).getRightChannel());
+            sounds.add(new ConcreteSoundWave(l, r));
+        }
+
+        var set = new HashSet<>(sounds);
+
+
+        var similarSet = new SoundWaveSimilarity().getSimilarSounds(set, numGroups, sounds.get(0));
+
+
+        assertNotNull(similarSet, "The returned set should not be null.");
+        assertEquals(numGroups, similarSet.size(), "The number of groups should be exactly " + numGroups);
+        assertTrue(similarSet.contains(sounds.get(0)), "The set should contain the first sound wave.");
+        assertFalse(similarSet.contains(sounds.get(originalWaves)), "The set should not contain noise-altered waves.");
+    }
+
+    @Test
     public void testSimilarSoundsNonRandom() {
         double[] c0 = {0.5, 0.2, -0.2};
         double[] c1 = {-0.2, 0.5, -0.2};
@@ -593,6 +626,32 @@ public class SmokeTests {
 
         assertTrue(set3.contains(w0) && set3.contains(w2));
         assertTrue(set4.contains(w0));
+
+    }
+    @Test
+    public void SimilarPairtest() {
+
+        double[] Channel1 = {0.1, 0.2, 0.3};
+        double[] Channel2 = {-0.1, -0.2, -0.3};
+        double[] Channel3 = {-0.2, -0.4, -0.6};
+
+        ConcreteSoundWave wave1 = new ConcreteSoundWave(Channel1, Channel1);
+        ConcreteSoundWave wave2 = new ConcreteSoundWave(Channel2, Channel2);
+        ConcreteSoundWave wave3 = new ConcreteSoundWave(Channel3, Channel3);
+
+        HashSet<SoundWave> test = new HashSet<>();
+        test.add(wave1);
+        test.add(wave2);
+        test.add(wave3);
+
+        HashSet<SoundWave> expectedresult = new HashSet<>();
+        expectedresult.add(wave2);
+        expectedresult.add(wave3);
+
+        Set<SoundWave> result = new HashSet<>();
+        result = new SoundWaveSimilarity().getSimilarSounds(test, 2, wave2);
+
+        assertEquals(expectedresult, result);
 
     }
 

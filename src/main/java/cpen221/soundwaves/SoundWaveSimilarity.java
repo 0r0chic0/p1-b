@@ -1,6 +1,7 @@
 package cpen221.soundwaves;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SoundWaveSimilarity {
 
@@ -44,7 +45,7 @@ public class SoundWaveSimilarity {
             }
         }
 
-        List<SoundWave> audioDatalist = audioDataset.stream().toList();
+        List<SoundWave> audioDatalist = audioDataset.stream().collect(Collectors.toList());
         Map<Double, List<SimilarPair>> pairs = new HashMap<>();
         List<Double> similarityKeys = new ArrayList<>();
 

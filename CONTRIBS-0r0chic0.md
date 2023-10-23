@@ -1,4 +1,4 @@
 -Wrote getInstance for TriangleWave 
 -Wrote Scale method
--Wrote one of the two implementations for Task 5 
+-Wrote the implementations for Task 5 
 -created test for task5
