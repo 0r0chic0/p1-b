@@ -54,7 +54,7 @@ public class SoundWaveSimilarityAlternative {
             for (int j = i + 1; j < audioDatalist.size(); j++) {
                 double currentSimilarity = audioDatalist.get(i).similarity(audioDatalist.get(j));
                 similarityKeys.add(currentSimilarity);
-                if (pairs.containsKey(currentSimilarity)) {
+                if (!pairs.containsKey(currentSimilarity)) {
                     pairs.put(currentSimilarity, new ArrayList<>());
                 }
                 pairs.get(currentSimilarity).add(new SimilarPair(audioDatalist.get(i), audioDatalist.get(j)));
@@ -77,27 +77,22 @@ public class SoundWaveSimilarityAlternative {
                 w1In = false;
                 w2In = false;
                 if (partitionedGroups.containsKey(i)) {
-                    for (SoundWave signal : partitionedGroups.get(i)) {
-                        if (signal.equals(topPair.getWave1())) {
-                            w1In = true;
-                            w1Pos = i;
-                        }
-                        if (signal.equals(topPair.getWave2())) {
-                            w2In = true;
-                            w2Pos = i;
-                        }
-                        if (w1In && w2In) {
-                            similarityKeys.remove(0);
-                            if (pairs.get(maxSim).isEmpty()) {
-                                pairs.remove(maxSim);
-                            } else {
-                                pairs.get(maxSim).remove(0);
-                            }
-                            sameGroup = true;
-                            break;
-                        }
+                    if (partitionedGroups.get(i).contains(topPair.getWave1())) {
+                        w1In = true;
+                        w1Pos = i;
                     }
-                    if (sameGroup) {
+                    if (partitionedGroups.get(i).contains(topPair.getWave2())) {
+                        w2In = true;
+                        w2Pos = i;
+                    }
+                    if (w1In && w2In) {
+                        similarityKeys.remove(0);
+                        if (pairs.get(maxSim).isEmpty()) {
+                            pairs.remove(maxSim);
+                        } else {
+                            pairs.get(maxSim).remove(0);
+                        }
+                        sameGroup = true;
                         break;
                     }
                 }
