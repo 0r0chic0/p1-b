@@ -62,19 +62,19 @@ public class SoundWaveSimilarity {
         }
         int partitionSize = audioDataset.size();
         while (partitionSize > numGroups) {
-            // Create a copy of partitions before sorting
+
             List<HashSet<SoundWave>> finalpairsCopy = new ArrayList<>(finalpairs.keySet());
 
-            // Sort finalpairs by similarity in descending order
+
             finalpairsCopy.sort((o1, o2) -> Double.compare(finalpairs.get(o2), finalpairs.get(o1)));
 
-            // Get the entry with the highest similarity
+
             HashSet<SoundWave> mp = finalpairsCopy.get(0);
 
             List<SoundWave> maxPair = mp.stream().collect(Collectors.toList());
 
 
-            // Find the partitions containing the audio clips in the maxPair
+
             int partition1 = -1;
             int partition2 = -1;
             for (Integer partition : partitionedGroups.keySet()) {
@@ -130,22 +130,5 @@ public class SoundWaveSimilarity {
         }return new HashSet<>();
     }
 }
-       // List<HashSet<SoundWave>> finalpairsCopy = new ArrayList<>(finalpairs.keySet());
-
-       // finalpairsCopy.sort((o1, o2) -> Double.compare(finalpairs.get(o2), finalpairs.get(o1)));
-
-        //HashSet<SoundWave> mp = finalpairsCopy.get(0);
-
-        //List<SoundWave> maxPair = mp.stream().collect(Collectors.toList());
-        //Set<SoundWave> maxpair1 = new HashSet<>();
-        //maxpair1.add(maxPair.get(0));
-
-        //if (partitionedGroups.get(1).equals(maxpair1)) {
-           // return partitionedGroups.get(i);
-
-        //} return new HashSet<>();
-    //}
-//}
-
 
 
