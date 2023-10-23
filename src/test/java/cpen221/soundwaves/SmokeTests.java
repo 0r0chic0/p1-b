@@ -514,7 +514,7 @@ public class SmokeTests {
         expectedresults.add(wave3);
 
        Set<SoundWave> actualresult = new HashSet<>();
-       actualresult = new SoundWaveSimilarityAlternative().getSimilarSounds(test,2,wave2);
+       actualresult = new SoundWaveSimilarity().getSimilarSounds(test,2,wave2);
        assertEquals(expectedresults,actualresult);
     }
 
