@@ -5,7 +5,11 @@ import cpen221.soundwaves.soundutils.Audio;
 import cpen221.soundwaves.soundutils.AudioFile;
 import cpen221.soundwaves.soundutils.SoundWaveChart;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
 
 
 import static cpen221.soundwaves.soundutils.FilterType.*;
@@ -24,21 +28,44 @@ import static cpen221.soundwaves.soundutils.FilterType.*;
  *     </ul>
  * </p>
  */
+
+
 public class Main {
+    private static double[] randomSignal() {
+        return new Random().doubles(100).map(x -> -1.0 + (x * 2)).toArray();
+    }
+    private static double[] randomNoise(double[] original) {
+        var rand = new Random();
+        return Arrays.stream(original).map(x -> x + rand.nextDouble() * 0.2 - 0.1).toArray();
+    }
 
     public static void main(String[] args) {
-        double freq = 6000;
-        double phase = 0.0;
-        double amplitude = 1.0;
-        double duration = 5.0 / 44100.0;
-        SoundWave sw1 = SquareWave.getInstance(freq, phase, amplitude, duration);
-        double[] left = {1, 1, 1, 1, -1};
-        double[] right = {1, 1, 1, 1, -1};
+        SoundWave test1 = MP3Wave.getInstance("samples/force.mp3");
+        System.out.println(test1.getLeftChannel());
 
-//        examplePlayMP3file();
-//        examplePlayWAVfile();
-        exampleSineWaveWithChart();
-//        examplePlayAndDraw();
+        double[] left = {1, 1, 1, 1};
+        double[] right = {1, 1, 1, 1};
+        double[] left2 = {-0.5, 1, 1, 1};
+        double[] right2 = {1, 1, 1, 1};
+        double[] left3 = {1, 1, 1, 1};
+        double[] right3 = {1, 1, 1, 1};
+        double[] left4 = {1, 1, 1, 1};
+        double[] right4 = {1, 1, 1, 1};
+        double[] left5 = {1, 1, 1, 1};
+        double[] right5 = {1, 1, 1, 1};
+        double[] left6 = {1, 1, 1, 1};
+        double[] right6 = {1, 1, 1, 1};
+
+        SoundWave w1 = new ConcreteSoundWave(left, right);
+        SoundWave w2 = new ConcreteSoundWave(left2, right2);
+        SoundWave w3 = new ConcreteSoundWave(left2, right2);
+        SoundWave w4 = new ConcreteSoundWave(left2, right2);
+        SoundWave w5 = new ConcreteSoundWave(left2, right2);
+        SoundWave w6 = new ConcreteSoundWave(left2, right2);
+        examplePlayMP3file();
+        //examplePlayWAVfile();
+        //exampleSineWaveWithChart();
+        //examplePlayAndDraw();
     }
 
     private static void examplePlayMP3file() {

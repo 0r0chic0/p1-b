@@ -380,7 +380,9 @@ public class ConcreteSoundWave implements SoundWave {
     }
 
     /**
-     * Calculates the similarity of the sound wave to sound wave other
+     * Calculates the similarity of the sound wave to sound wave other.
+     * Calculates based off the assumption that all {@code ConcreteSoundWave}s have 2 channels,
+     * This is the case even if channels are identical.
      *
      * @param other is not null.
      * @return return the similarity of the sound wave and other
@@ -390,7 +392,6 @@ public class ConcreteSoundWave implements SoundWave {
         if (debug) {
             checkRep();
         }
-
         List<Double> w1R = getRightChannelList();
         List<Double> w1L = getLeftChannelList();
         List<Double> w2R = other.getRightChannelList();
@@ -454,6 +455,10 @@ public class ConcreteSoundWave implements SoundWave {
         double gamma2 = gamma(other, this);
         this.scale(1 / beta2);
 
+        if (debug) {
+            checkRep();
+        }
+
         return (gamma1 + gamma2) / 2.0;
     }
 
@@ -485,31 +490,6 @@ public class ConcreteSoundWave implements SoundWave {
 
         return 1.0 / (1.0 + sum1 + sum2);
     }
-
-    /**
-     * Generate a fractal waveform from the given sound wave
-     * (this is for fun!)
-     * @param period the fractal periodicity, >= 1
-     * @return a fractalized ConcreteSoundWave
-     */
-    public ConcreteSoundWave fractalize(int period) {
-        final long SCALE = period * SAMPLES_PER_SECOND;
-        double[] lchannel = this.getLeftChannel();
-        double[] rchannel = this.getRightChannel();
-
-        double[] newLChannel = Arrays.stream(lchannel).mapToLong(t -> (int)(SCALE * t))
-                .map(t -> t & (t >>> 3) % SCALE)
-                .mapToDouble(t -> (double) t / SCALE)
-                .toArray();
-        double[] newRChannel = Arrays.stream(rchannel).mapToLong(t -> (long)(SCALE * t))
-                .map(t -> t & (t >>> 3) % SCALE)
-                .mapToDouble(t -> (double) t / SCALE)
-                .toArray();
-        // One could also try:
-        // t & (t >> 3) & (t >> 8) % SCALE;
-        return new ConcreteSoundWave(newLChannel, newRChannel);
-    }
-
 
     /**
      * Computes the highest amplitude frequency component

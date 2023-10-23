@@ -26,8 +26,8 @@ public class SimilarPair {
      * @param wave2: second {@code SoundWave} of the pair
      */
     public SimilarPair(SoundWave wave1, SoundWave wave2) {
-        this.wave1 = new ConcreteSoundWave(wave1.getLeftChannel(), wave1.getRightChannel());
-        this.wave2 = new ConcreteSoundWave(wave2.getLeftChannel(), wave2.getRightChannel());
+        this.wave1 = wave1;
+        this.wave2 = wave2;
         similarity = wave1.similarity(wave2);
     }
 
@@ -36,10 +36,10 @@ public class SimilarPair {
     }
 
     public SoundWave getWave1() {
-        return new ConcreteSoundWave(wave1.getLeftChannel(), wave1.getRightChannel());
+        return wave1;
     }
 
     public SoundWave getWave2() {
-        return new ConcreteSoundWave(wave2.getLeftChannel(), wave2.getRightChannel());
+        return wave2;
     }
 }

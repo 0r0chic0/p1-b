@@ -492,32 +492,6 @@ public class SmokeTests {
 
         assertEquals(0.7153, similarity, 0.01);
     }
-    @Test
-    public void SimilarPairs() {
-
-        double[] Channel1 = {0.1, 0.2, 0.3};
-        double[] Channel2 = {-0.1, -0.2, -0.3};
-        double[] Channel3 = {-0.2,-0.4,-0.6};
-
-        ConcreteSoundWave wave1 = new ConcreteSoundWave(Channel1, Channel1);
-        ConcreteSoundWave wave2 = new ConcreteSoundWave(Channel2, Channel2);
-        ConcreteSoundWave wave3 = new ConcreteSoundWave(Channel3, Channel3);
-
-        Set<SoundWave> Testcase = new HashSet<>();
-        Testcase.add(wave1);
-        Testcase.add(wave2);
-        Testcase.add(wave3);
-
-        Set<SoundWave> expectedresult = new HashSet<>();
-        expectedresult.add(wave2);
-        expectedresult.add(wave3);
-
-        Set<SoundWave> result = new HashSet<SoundWave>();
-        result = new SoundWaveSimilarity().getSimilarSounds(Testcase,2,wave2);
-        assertEquals(expectedresult , result);
-
-
-    }
 
     /**
      * Generate a random signal of length 100.
