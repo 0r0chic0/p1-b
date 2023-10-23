@@ -40,29 +40,22 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        SoundWave test1 = MP3Wave.getInstance("samples/force.mp3");
-        System.out.println(test1.getLeftChannel());
+        double[] c0 = {0.5, 0.2, -0.2};
+        double[] c1 = {-0.2, 0.5, -0.2};
+        double[] c2 = {0.4, 0.2, -0.2};
+        double[] c3 = {-0.3, 0.7, -0.8};
+        SoundWave w0 = new ConcreteSoundWave(c0,c0);
+        SoundWave w1 = new ConcreteSoundWave(c1,c1);
+        SoundWave w2 = new ConcreteSoundWave(c2,c2);
+        SoundWave w3 = new ConcreteSoundWave(c3,c3);
+        double s0 = w0.similarity(w1);
+        double s1 = w0.similarity(w2);
+        double s2 = w0.similarity(w3);
+        double s3 = w1.similarity(w2);
+        double s4 = w1.similarity(w3);
+        double s5 = w2.similarity(w3);
 
-        double[] left = {1, 1, 1, 1};
-        double[] right = {1, 1, 1, 1};
-        double[] left2 = {-0.5, 1, 1, 1};
-        double[] right2 = {1, 1, 1, 1};
-        double[] left3 = {1, 1, 1, 1};
-        double[] right3 = {1, 1, 1, 1};
-        double[] left4 = {1, 1, 1, 1};
-        double[] right4 = {1, 1, 1, 1};
-        double[] left5 = {1, 1, 1, 1};
-        double[] right5 = {1, 1, 1, 1};
-        double[] left6 = {1, 1, 1, 1};
-        double[] right6 = {1, 1, 1, 1};
-
-        SoundWave w1 = new ConcreteSoundWave(left, right);
-        SoundWave w2 = new ConcreteSoundWave(left2, right2);
-        SoundWave w3 = new ConcreteSoundWave(left2, right2);
-        SoundWave w4 = new ConcreteSoundWave(left2, right2);
-        SoundWave w5 = new ConcreteSoundWave(left2, right2);
-        SoundWave w6 = new ConcreteSoundWave(left2, right2);
-        examplePlayMP3file();
+        //examplePlayMP3file();
         //examplePlayWAVfile();
         //exampleSineWaveWithChart();
         //examplePlayAndDraw();
