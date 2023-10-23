@@ -448,12 +448,12 @@ public class ConcreteSoundWave implements SoundWave {
             beta2 = scalingSum2 / (w2L.size() + w2R.size());
         }
 
-        other.scale(beta1);
-        double gamma1 = gamma(this, other);
-        this.scale(beta2);
-        other.scale(1 / beta1);
-        double gamma2 = gamma(other, this);
-        this.scale(1 / beta2);
+        SoundWave clone1 = new ConcreteSoundWave(other.getLeftChannel(), other.getRightChannel());
+        clone1.scale(beta1);
+        double gamma1 = gamma(this, clone1);
+        SoundWave clone2 = new ConcreteSoundWave(getLeftChannel(),getRightChannel());
+        clone2.scale(beta2);
+        double gamma2 = gamma(other, clone2);
 
         if (debug) {
             checkRep();

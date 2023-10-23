@@ -1,7 +1,6 @@
 package cpen221.soundwaves;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SoundWaveSimilarity {
 
@@ -20,23 +19,21 @@ public class SoundWaveSimilarity {
      *                      requires that baselineWave is in audioDataset
      *                      and baselineWave is not null
      * @return the group of {@code SoundWave}s that are more similar to baseLineWave
-     * @author 0r0chic0
      */
     public Set<SoundWave> getSimilarSounds(Set<SoundWave> audioDataset,
                                            int numGroups,
                                            SoundWave baselineWave) {
-
         if (numGroups == 1) {
             return audioDataset;
         }
 
         Map<Integer, HashSet<SoundWave>> partitionedGroups = new HashMap<>();
 
-        int i = 0;
+        int maxGroup = 0;
         for (SoundWave signal : audioDataset) {
-            partitionedGroups.put(i, new HashSet<>());
-            partitionedGroups.get(i).add(signal);
-            i++;
+            partitionedGroups.put(maxGroup, new HashSet<>());
+            partitionedGroups.get(maxGroup).add(signal);
+            maxGroup++;
         }
 
         if (numGroups == audioDataset.size()) {
@@ -47,105 +44,75 @@ public class SoundWaveSimilarity {
             }
         }
 
-        Map<HashSet<SoundWave>, Double> finalpairs = new HashMap<>();
-        List<SoundWave> audiodatasetconvert = new ArrayList<>();
-        audiodatasetconvert = audioDataset.stream().collect(Collectors.toList());
+        List<SoundWave> audioDatalist = audioDataset.stream().toList();
+        Map<Double, List<SimilarPair>> pairs = new HashMap<>();
+        List<Double> similarityKeys = new ArrayList<>();
 
-        for (int j = 0; j < audioDataset.size() - 1; j++) {
-            for (int k = j + 1; k < audioDataset.size(); k++) {
-                HashSet<SoundWave> pairs = new HashSet<>();
-                pairs.add(audiodatasetconvert.get(j));
-                pairs.add(audiodatasetconvert.get(k));
-                double simValue = new SimilarPair(audiodatasetconvert.get(j), audiodatasetconvert.get(k)).getSimilarity();
-                finalpairs.put(pairs, simValue);
+        for (int i = 0; i < audioDatalist.size() - 1; i++) {
+            for (int j = i + 1; j < audioDatalist.size(); j++) {
+                double currentSimilarity = audioDatalist.get(i).similarity(audioDatalist.get(j));
+                similarityKeys.add(currentSimilarity);
+                if (!pairs.containsKey(currentSimilarity)) {
+                    pairs.put(currentSimilarity, new ArrayList<>());
+                }
+                pairs.get(currentSimilarity).add(new SimilarPair(audioDatalist.get(i), audioDatalist.get(j)));
             }
         }
-        int partitionSize = audioDataset.size();
-        while (partitionSize > numGroups) {
-            // Create a copy of partitions before sorting
-            List<HashSet<SoundWave>> finalpairsCopy = new ArrayList<>(finalpairs.keySet());
 
-            // Sort finalpairs by similarity in descending order
-            finalpairsCopy.sort((o1, o2) -> Double.compare(finalpairs.get(o2), finalpairs.get(o1)));
+        Collections.sort(similarityKeys);
+        Collections.reverse(similarityKeys);
 
-            // Get the entry with the highest similarity
-            HashSet<SoundWave> mp = finalpairsCopy.get(0);
-
-            List<SoundWave> maxPair = mp.stream().collect(Collectors.toList());
-
-
-            // Find the partitions containing the audio clips in the maxPair
-            int partition1 = -1;
-            int partition2 = -1;
-            for (Integer partition : partitionedGroups.keySet()) {
-                if (partitionedGroups.get(partition).containsAll(maxPair)) {
-                    finalpairsCopy.remove(maxPair);
-                    if (partition1 == -1) {
-                        partition1 = partition;
-                    } else {
-                        partition2 = partition;
+        while (numGroups < partitionedGroups.size()) {
+            double maxSim = similarityKeys.get(0);
+            SimilarPair topPair = pairs.get(maxSim).get(0);
+            boolean w1In;
+            boolean w2In;
+            boolean sameGroup = false;
+            int w1Pos = -1;
+            int w2Pos = -1;
+            for (int i = 0; i < maxGroup; i++) {
+                w1In = false;
+                w2In = false;
+                if (partitionedGroups.containsKey(i)) {
+                    if (partitionedGroups.get(i).contains(topPair.getWave1())) {
+                        w1In = true;
+                        w1Pos = i;
+                    }
+                    if (partitionedGroups.get(i).contains(topPair.getWave2())) {
+                        w2In = true;
+                        w2Pos = i;
+                    }
+                    if (w1In && w2In) {
+                        similarityKeys.remove(0);
+                        if (pairs.get(maxSim).isEmpty()) {
+                            pairs.remove(maxSim);
+                        } else {
+                            pairs.get(maxSim).remove(0);
+                        }
+                        sameGroup = true;
                         break;
                     }
                 }
             }
-            int position = 0;
-            if (partition1 == -1 && partition2 == -1) {
-                for (int position1 = 0; position1 < finalpairs.size() - 1; position1++) {
-                    for (int position2 = position1 + 1; position2 < finalpairs.size(); position2++) {
-                        int size1 = partitionedGroups.get(position1).size();
-                        int size2 = partitionedGroups.get(position2).size();
-                        Set<SoundWave> maxPair1 = new HashSet<>();
-                        maxPair1.add(maxPair.get(0));
-                        Set<SoundWave> maxPair2 = new HashSet<>();
-                        maxPair2.add(maxPair.get(1));
-                        if (size1 == 1 && size2 == 1) {
-                            if (partitionedGroups.get(position1).equals(maxPair1) && partitionedGroups.get(position2).equals(maxPair2) || partitionedGroups.get(position1).equals(maxPair1) && partitionedGroups.get(position2).equals(maxPair2)) {
-                                partitionedGroups.get(position1).addAll(partitionedGroups.get(position2));
-                                partitionedGroups.remove(position2);
-
-                                finalpairsCopy.remove(maxPair);
-                                finalpairs.keySet().remove(maxPair);
-                                partitionSize--;
-                            }
-                        } else {
-                            if (partitionedGroups.get(position1).contains(mp) && partitionedGroups.get(position2).contains(mp) || partitionedGroups.get(position1).equals(maxPair.get(1)) && partitionedGroups.get(position2).equals(maxPair.get(0))) {
-                                partitionedGroups.get(position1).addAll(partitionedGroups.get(position2));
-                                partitionedGroups.remove(position2);
-
-                                // Remove maxPair from partitionsCopy
-                                finalpairsCopy.remove(maxPair);
-                                finalpairs.keySet().remove(maxPair);
-                                partitionSize--;
-                            }
-                        }
-                    }
+            if (!sameGroup) {
+                similarityKeys.remove(0);
+                for (SoundWave signal : partitionedGroups.get(w2Pos)) {
+                    partitionedGroups.get(w1Pos).add(signal);
                 }
-                for (HashSet<SoundWave> partition : partitionedGroups.values()) {
-                    if (partition.contains(baselineWave)) {
-                        return partition;
-                    }
-                }
-
+                partitionedGroups.remove(w2Pos);
             }
-        }return new HashSet<>();
+        }
+
+        for (int i = 0; i < maxGroup; i++) {
+            if (partitionedGroups.containsKey(i)) {
+                for (SoundWave signal : partitionedGroups.get(i)) {
+                    if (signal.equals(baselineWave)) {
+                        return partitionedGroups.get(i);
+                    }
+                }
+            }
+        }
+
+        return new HashSet<>();
     }
 }
-       // List<HashSet<SoundWave>> finalpairsCopy = new ArrayList<>(finalpairs.keySet());
-
-       // finalpairsCopy.sort((o1, o2) -> Double.compare(finalpairs.get(o2), finalpairs.get(o1)));
-
-        //HashSet<SoundWave> mp = finalpairsCopy.get(0);
-
-        //List<SoundWave> maxPair = mp.stream().collect(Collectors.toList());
-        //Set<SoundWave> maxpair1 = new HashSet<>();
-        //maxpair1.add(maxPair.get(0));
-
-        //if (partitionedGroups.get(1).equals(maxpair1)) {
-           // return partitionedGroups.get(i);
-
-        //} return new HashSet<>();
-    //}
-//}
-
-
-

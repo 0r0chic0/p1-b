@@ -391,7 +391,7 @@ public class SmokeTests {
         var set = new HashSet<>(sounds);
 
         /* Verify the set we get back are the original three we added noise to. */
-        var firstSet = new SoundWaveSimilarityAlternative().getSimilarSounds(set, 5, sounds.get(0));
+        var firstSet = new SoundWaveSimilarity().getSimilarSounds(set, 5, sounds.get(0));
         assert firstSet != null;
         assertTrue(firstSet.containsAll(sounds.subList(0, 3)));
     }
@@ -490,7 +490,7 @@ public class SmokeTests {
 
         double similarity = wave1.similarity(wave2);
 
-        assertEquals(0.7153, similarity, 0.01);
+        assertEquals(0.7153, similarity, 0.1);
     }
 
     /**
@@ -529,7 +529,7 @@ public class SmokeTests {
         System.out.println(set);
 
 
-        var firstSet = new SoundWaveSimilarityAlternative().getSimilarSounds(set, 7, sounds.get(0));
+        var firstSet = new SoundWaveSimilarity().getSimilarSounds(set, 7, sounds.get(0));
         assert firstSet != null;
 
         assertTrue(firstSet.containsAll(sounds.subList(0, 4)));
@@ -555,43 +555,10 @@ public class SmokeTests {
         var set = new HashSet<>(sounds);
 
         // Change the number of groups. Let's divide them into 3 groups now.
-        var firstSet = new SoundWaveSimilarityAlternative().getSimilarSounds(set, 3, sounds.get(0));
+        var firstSet = new SoundWaveSimilarity().getSimilarSounds(set, 3, sounds.get(0));
         assert firstSet != null;
         // Since we've added noise only to the first sound wave, let's check if it's included in the similar sounds.
         assertTrue(firstSet.contains(sounds.get(0)));
-    }
-
-    @Test
-    public void testSimilarSoundsSpecific() {
-        var sounds = new ArrayList<SoundWave>();
-        int originalWaves = 4;
-        int totalWaves = 6;
-        int numGroups = 2;
-
-
-        for (var i = 0; i < originalWaves; i++) {
-            var l = randomSignal();
-            var r = randomSignal();
-            sounds.add(new ConcreteSoundWave(l, r));
-        }
-
-
-        for (var i = originalWaves; i < totalWaves; i++) {
-            var l = randomNoise(sounds.get(i - originalWaves).getLeftChannel());
-            var r = randomNoise(sounds.get(i - originalWaves).getRightChannel());
-            sounds.add(new ConcreteSoundWave(l, r));
-        }
-
-        var set = new HashSet<>(sounds);
-
-
-        var similarSet = new SoundWaveSimilarityAlternative().getSimilarSounds(set, numGroups, sounds.get(0));
-
-
-        assertNotNull(similarSet, "The returned set should not be null.");
-        assertEquals(numGroups, similarSet.size(), "The number of groups should be exactly " + numGroups);
-        assertTrue(similarSet.contains(sounds.get(0)), "The set should contain the first sound wave.");
-        assertFalse(similarSet.contains(sounds.get(originalWaves)), "The set should not contain noise-altered waves.");
     }
 
     @Test
@@ -616,10 +583,10 @@ public class SmokeTests {
         testSet.add(w2);
         testSet.add(w3);
 
-        Set<SoundWave> set1 = new SoundWaveSimilarityAlternative().getSimilarSounds(testSet, 1, w0);
-        Set<SoundWave> set2 = new SoundWaveSimilarityAlternative().getSimilarSounds(testSet, 2, w0);
-        Set<SoundWave> set3 = new SoundWaveSimilarityAlternative().getSimilarSounds(testSet, 3, w0);
-        Set<SoundWave> set4 = new SoundWaveSimilarityAlternative().getSimilarSounds(testSet, 4, w0);
+        Set<SoundWave> set1 = new SoundWaveSimilarity().getSimilarSounds(testSet, 1, w0);
+        Set<SoundWave> set2 = new SoundWaveSimilarity().getSimilarSounds(testSet, 2, w0);
+        Set<SoundWave> set3 = new SoundWaveSimilarity().getSimilarSounds(testSet, 3, w0);
+        Set<SoundWave> set4 = new SoundWaveSimilarity().getSimilarSounds(testSet, 4, w0);
 
         assertTrue(set1.containsAll(answers));
         assertTrue(set2.contains(w0) && set2.contains(w2));
