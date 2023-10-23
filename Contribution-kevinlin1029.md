@@ -3,3 +3,4 @@
 - wrote addEcho method
 - help to write similarity test case
 - wrote contain method
+- wrote some Task5 tests
