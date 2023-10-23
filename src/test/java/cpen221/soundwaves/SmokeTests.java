@@ -514,4 +514,91 @@ public class SmokeTests {
         return Arrays.stream(original).map(x -> x + rand.nextDouble() * 0.2 - 0.1).toArray();
     }
 
+    @Test
+    public void testSimilarSounds() {
+        ArrayList<SoundWave> sounds = new ArrayList<SoundWave>();
+
+        for (var i = 0; i < 10; i++) {
+            var l = randomSignal();
+            var r = randomSignal();
+            sounds.add(new ConcreteSoundWave(l, r));
+
+
+            for (var j = 0; j < 3; j++) {
+                sounds.add(new ConcreteSoundWave(randomNoise(l), randomNoise(r)));
+            }
+        }
+        System.out.println(sounds);
+
+        var set = new HashSet<>(sounds);
+        System.out.println(set);
+
+
+        var firstSet = new SoundWaveSimilarity().getSimilarSounds(set, 7, sounds.get(0));
+        assert firstSet != null;
+
+        assertTrue(firstSet.containsAll(sounds.subList(0, 4)));
+    }
+
+
+    @Test
+    public void testSimilarSounds3() {
+        var sounds = new ArrayList<SoundWave>();
+        // Change the number of sound waves. Let's create 8 original sound waves this time.
+        for (var i = 0; i < 8; i++) {
+            var l = randomSignal();
+            var r = randomSignal();
+            sounds.add(new ConcreteSoundWave(l, r));
+
+            // Let's add noise to only one of the sound waves to see if the method can still identify similarities.
+            if (i == 0) { // Add noise only to the first sound wave
+                sounds.add(new ConcreteSoundWave(randomNoise(l), randomNoise(r)));
+                sounds.add(new ConcreteSoundWave(randomNoise(l), randomNoise(r)));
+            }
+        }
+
+        var set = new HashSet<>(sounds);
+
+        // Change the number of groups. Let's divide them into 3 groups now.
+        var firstSet = new SoundWaveSimilarity().getSimilarSounds(set, 3, sounds.get(0));
+        assert firstSet != null;
+        // Since we've added noise only to the first sound wave, let's check if it's included in the similar sounds.
+        assertTrue(firstSet.contains(sounds.get(0)));
+    }
+
+    @Test
+    public void testSimilarSoundsSpecific() {
+        var sounds = new ArrayList<SoundWave>();
+        int originalWaves = 4;
+        int totalWaves = 6;
+        int numGroups = 2;
+
+
+        for (var i = 0; i < originalWaves; i++) {
+            var l = randomSignal();
+            var r = randomSignal();
+            sounds.add(new ConcreteSoundWave(l, r));
+        }
+
+
+        for (var i = originalWaves; i < totalWaves; i++) {
+            var l = randomNoise(sounds.get(i - originalWaves).getLeftChannel());
+            var r = randomNoise(sounds.get(i - originalWaves).getRightChannel());
+            sounds.add(new ConcreteSoundWave(l, r));
+        }
+
+        var set = new HashSet<>(sounds);
+
+
+        var similarSet = new SoundWaveSimilarity().getSimilarSounds(set, numGroups, sounds.get(0));
+
+
+        assertNotNull(similarSet, "The returned set should not be null.");
+        assertEquals(numGroups, similarSet.size(), "The number of groups should be exactly " + numGroups);
+        assertTrue(similarSet.contains(sounds.get(0)), "The set should contain the first sound wave.");
+        assertFalse(similarSet.contains(sounds.get(originalWaves)), "The set should not contain noise-altered waves.");
+    }
+
+
+
 }
