@@ -13,3 +13,4 @@
 - Wrote similarPair class
 - Wrote test for contains
 - Wrote MP3Wave class
+- Finished SoundWaveSimilarity

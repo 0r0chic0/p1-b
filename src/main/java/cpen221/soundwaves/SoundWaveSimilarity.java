@@ -1,7 +1,6 @@
 package cpen221.soundwaves;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SoundWaveSimilarity {
 
@@ -27,16 +26,13 @@ public class SoundWaveSimilarity {
         if (numGroups == 1) {
             return audioDataset;
         }
-
         Map<Integer, HashSet<SoundWave>> partitionedGroups = new HashMap<>();
-
         int maxGroup = 0;
         for (SoundWave signal : audioDataset) {
             partitionedGroups.put(maxGroup, new HashSet<>());
             partitionedGroups.get(maxGroup).add(signal);
             maxGroup++;
         }
-
         if (numGroups == audioDataset.size()) {
             for (Integer group : partitionedGroups.keySet()) {
                 if (partitionedGroups.get(group).contains(baselineWave)) {
@@ -44,11 +40,9 @@ public class SoundWaveSimilarity {
                 }
             }
         }
-
-        List<SoundWave> audioDatalist = audioDataset.stream().collect(Collectors.toList());
+        List<SoundWave> audioDatalist = audioDataset.stream().toList();
         Map<Double, List<SimilarPair>> pairs = new HashMap<>();
         List<Double> similarityKeys = new ArrayList<>();
-
         for (int i = 0; i < audioDatalist.size() - 1; i++) {
             for (int j = i + 1; j < audioDatalist.size(); j++) {
                 double currentSimilarity = audioDatalist.get(i).similarity(audioDatalist.get(j));
@@ -59,7 +53,6 @@ public class SoundWaveSimilarity {
                 pairs.get(currentSimilarity).add(new SimilarPair(audioDatalist.get(i), audioDatalist.get(j)));
             }
         }
-
         Collections.sort(similarityKeys);
         Collections.reverse(similarityKeys);
 
@@ -113,7 +106,6 @@ public class SoundWaveSimilarity {
                 }
             }
         }
-
         return new HashSet<>();
     }
 }
