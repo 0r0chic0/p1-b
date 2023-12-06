@@ -1,9 +1,41 @@
 plugins {
     id 'java'
+    id 'checkstyle'
+    id 'jacoco'
 }
 
 group 'ca.ubc.ece.cpen221'
 version '1.0-SNAPSHOT'
+
+checkstyle {
+    toolVersion '10.12.3'
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required  = true
+        html.required = false
+    }
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled true
+        html.enabled false
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDir = file("$buildDir/reports/jacoco")
+
+}
 
 repositories {
     mavenCentral()
@@ -18,7 +50,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    implementation name: 'StdPlayer'
+//    implementation name: 'StdPlayer'
     implementation name: 'MP3Audio'
     implementation 'org.jetbrains:annotations:24.0.0'
 }
